@@ -6,18 +6,31 @@ from gi.repository import Gtk
 window = Gtk.Window(title='Ref lights')
 window.fullscreen()
 
+#TODO - MARK - figure out how to do this
+window.modify_bg(Gtk.STATE_NORMAL, Gtk.gdk.Color('#000000'))
+
 #TODO - setup input devices
 
 #TODO - get window dimensions and apply scaling to lights and font
+#NOTE - is this necessary given GTK layout tools?
+#TODO - is a grid better
+light_box = Gtk.Box(spacing=10)
+window.add(light_box)
 
 #TEMP - demo drawing lights and next attempt submission timer
-red_light = Gtk.Image()
-red_light.set_from_file('redlight.png')
+left_light = Gtk.Image()
+left_light.set_from_file('redlight.png')
 
-#TODO - config file default positions and sizes
-red_light.set_position(50,50)
+light_box.pack_start(left_light, True, True, 0)
 
-window.add(red_light)
+head_light = Gtk.Image()
+head_light.set_from_file('redlight.png')
+light_box.pack_start(head_light, True, True, 0)
+
+right_light = Gtk.Image()
+right_light.set_from_file('redlight.png')
+light_box.pack_start(right_light, True, True, 0)
+
 
 #TODO - TEMP - demo drawing lift timer
 
