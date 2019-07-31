@@ -41,7 +41,6 @@ right_light.set_from_file('redlight.png')
 light_grid.attach(right_light, left=2, top=3, width=1, height=1)
 
 
-
 #TODO - TEMP - demo drawing lift timer
 
 
