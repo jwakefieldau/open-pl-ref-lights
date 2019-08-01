@@ -5,6 +5,10 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
 import datetime
 
 def next_att_timer_tick(label_widget, span_size,  start_dt):
+
+    # return true to fire again
+    ret = False
+
     cur_dt = datetime.datetime.now()
     timer_td = cur_dt - start_dt
     timer_total_countdown_seconds = int(60 - timer_td.seconds)
@@ -13,12 +17,24 @@ def next_att_timer_tick(label_widget, span_size,  start_dt):
     if timer_total_countdown_seconds > 0:
         timer_min = int(timer_total_countdown_seconds / 60)
         timer_sec = timer_total_countdown_seconds - (timer_min * 60)
+
+        ret = True
     
     else:
         timer_min = 0
         timer_sec = 0
 
-    label_widget.set_markup('<span size="{}" foreground="white">Next attempt submission: {}:{}</span>'.format(span_size, timer_min, timer_sec))
+    # pad seconds with leading zeroes
+    if timer_sec < 10:
+        timer_sec_str = '0{}'.format(timer_sec)
+    
+    else:
+        timer_sec_str = str(timer_sec)   
+
+    label_widget.set_markup('<span size="{}" foreground="white">Next attempt submission: {}:{}</span>'.format(span_size, timer_min, timer_sec_str))
+
+    return ret
+
 
 window = Gtk.Window(title='Ref lights')
 window.fullscreen()
