@@ -1,6 +1,24 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
+
+import datetime
+
+def next_att_timer_tick(label_widget, span_size,  start_dt):
+    cur_dt = datetime.datetime.now()
+    timer_td = cur_dt - start_dt
+    timer_total_countdown_seconds = int(60 - timer_td.seconds)
+
+    # don't let it go negative
+    if timer_total_countdown_seconds > 0:
+        timer_min = int(timer_total_countdown_seconds / 60)
+        timer_sec = timer_total_countdown_seconds - (timer_min * 60)
+    
+    else:
+        timer_min = 0
+        timer_sec = 0
+
+    label_widget.set_markup('<span size="{}" foreground="white">Next attempt submission: {}:{}</span>'.format(span_size, timer_min, timer_sec))
 
 window = Gtk.Window(title='Ref lights')
 window.fullscreen()
@@ -70,6 +88,10 @@ next_att_timer_box = Gtk.Box()
 vbox.pack_start(next_att_timer_box, True, True, 0)
 next_att_timer_box.pack_end(next_att_timer_label, True, True, 0)
 
+#set timer callback
+next_att_timer_start_dt = datetime.datetime.now()
+GObject.timeout_add(1000, next_att_timer_tick, next_att_timer_label, next_att_timer_label_size, next_att_timer_start_dt)
+
 #TODO - TEMP - demo drawing lift timer
 
 window.show_all()
@@ -77,5 +99,7 @@ window.show_all()
 #TEMP - exit on keypress
 window.connect('key-press-event', Gtk.main_quit)
 Gtk.main()
+
+
 
 
