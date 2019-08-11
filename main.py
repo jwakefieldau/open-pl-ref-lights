@@ -16,8 +16,10 @@ if __name__ == '__main__':
     lights_window = LightsWindow(config['widget_scaling'])
 
     #show lift timer initially
-    lift_timer_window.show_all()
+    lift_timer_window.show()
     lift_timer_window.fullscreen()
+
+    #TODO set up controllers
 
     Gtk.main()
 
