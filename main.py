@@ -13,7 +13,7 @@ if __name__ == '__main__':
     config = ConfigParser(config_path)
 
     lift_timer_window = LiftTimerWindow(config['widget_scaling'])
-    lights_window = LightsWindow(config['widget_scaling'])
+    lights_window = LightsWindow(config['widget_scaling'], config['light_images'])
 
     #show lift timer initially
     lift_timer_window.show()

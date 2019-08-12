@@ -35,6 +35,12 @@ class AbsAppWindow(Gtk.Window):
     
         self.next_att_timer_label.set_markup('<span size="{}" foreground="white">Next attempt submission: {}</span>'.format(self.next_att_timer_label_size, timer_str))   
 
+    def show_next_att_timer(self):
+        self.next_att_timer_label.show()
+
+    def hide_next_att_timer(self):
+        self.next_att_timer_label.hide()
+
 
 class LiftTimerWindow(AbsAppWindow):
 
@@ -64,6 +70,47 @@ class LightsWindow(AbsAppWindow):
     
         AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
 
-        #TODO - method(s) for showing lights, next att timer
+        self.red_light_pixbuf = GdkPixbuf.Pixbuf.new_from_file(light_image_dict['red'])
+        self.white_light_pixbuf = GdkPixbuf.Pixbuf.new_from_file(light_image_dict['white'])
+
+        self.light_box = Gtk.Box(spacing=self.screen_width * widget_scaling_dict['light_spacing'])
+
+        self.left_light_image = Gtk.Image()
+        self.light_box.pack_start(self.left_light_image, False, False, 0)
+        self.head_light_image = Gtk.Image()
+        self.light_box.pack_start(self.head_light_image, False, False, 0)
+        self.right_light_image = Gtk.Image()
+        self.light_box.pack_start(self.right_light_image, False, False, 0)
+
+        self.vbox.pack_start(self.light_box, False, False, 0)
 
         self.add_next_att_timer()
+
+    def show_lights(self, light_state_obj):
+
+        # make certain we have decisions from all three
+        if not(light_state_obj.left is None or light_state_obj.head is None or light_state_obj.right is None):
+            
+            if light_state_obj.left:
+                self.left_light_image.set_from_pixbuf(self.white_light_pixbuf)
+
+            else:
+                self.left_light_image.set_from_pixbuf(self.red_light_pixbuf)
+            
+            if light_state_obj.head:
+                self.head_light_image.set_from_pixbuf(self.white_light_pixbuf)
+
+            else:
+                self.head_light_image.set_from_pixbuf(self.red_light_pixbuf)
+        
+            if light_state_obj.right:
+                self.right_light_image.set_from_pixbuf(self.white_light_pixbuf) 
+
+            else:
+                self.right_light_image.set_from_pixbuf(self.red_light_pixbuf)
+
+            self.left_light_image.show()
+            self.head_light_image.show()
+            self.right_light_image.show()
+
+            self.show()
