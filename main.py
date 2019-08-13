@@ -21,5 +21,7 @@ if __name__ == '__main__':
 
     #TODO set up controllers
 
+    #TODO set up timer handler
+
     Gtk.main()
 
