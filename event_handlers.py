@@ -1,3 +1,5 @@
+import evdev
+
 class TimerHandler(object):
 
     def __init__(self, next_att_timer_state, lift_timer_state):
@@ -19,12 +21,24 @@ class TimerHandler(object):
         window.update_next_att_timer(self.next_att_timer_state.timer_str())
 
 
-class ControllerPoller(object):
+class EvdevControllerPoller(object):
 
-    def __init__(self, left_controller, head_controller, right_controller):
+    def __init__(self, controller_config, button_maps):
 
-        self.left_controller = left_controller
-        self.head_controller = head_controller
-        self.right_controller = right_controler
+        self.button_map = button_maps[controller_config['type']]
 
-    #TODO - add method to run on add_idle and select etc from controllers
+        for path in evdev.list_devices():
+            cur_dev = evdev.InputDevice(path):
+
+            if cur_dev.phys == controller_config['left_usb_path']:
+                self.left_controller = cur_dev
+
+            elif cur_dev.phys == controller_config['head_usb_path']:
+                self.head_controller = cur_dev
+ 
+            elif cur_dev.phys == controller_config['right_usb_path']:
+                self.right_controller = cur_dev
+
+    def poll(self):
+
+        #TODO - select poll

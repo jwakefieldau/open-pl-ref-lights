@@ -5,9 +5,9 @@ from gi.repository import Gtk, GObject
 from configparser import ConfigParser
 
 from windows import LiftTimerWindow, LightsWindow
-from event_handlers import TimerHandler
+from event_handlers import TimerHandler, EvdevControllerPoller
 from state import TimerState
-from controllers import *
+from controllers import button_maps
 
 config_path = './config.cfg'
 
@@ -20,8 +20,8 @@ if __name__ == '__main__':
 
     next_att_timer_state = TimerState()
     lift_timer_state = TimerState()
-    
-    #TODO set up controller objects based on config
+
+    controller_poller = EvdevControllerPoller(config['controllers'], button_maps)
     
     #TODO - set up controller poller with add_idle
 

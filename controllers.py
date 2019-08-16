@@ -1,5 +1,7 @@
-class EvdevConroller(object):
-    #TODO
+import evdev
 
-class USBSNESController(EvdevController):
-    #TODO
+button_maps = {
+    'USBSNESController': {
+        # map evdev key events to our common button values
+    }
+}
