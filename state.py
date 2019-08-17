@@ -6,9 +6,39 @@ class LightsState(object):
 
     def clear(self):
 
-        self.left = None
-        self.head = None
-        self.right = None
+        self.state = {
+            'left': None,
+            'head': None,
+            'right': None,
+        }
+
+    def is_complete(self):
+
+        ret = False
+
+        if [v for (k, v,) in self.state.items()].count(None) == 0:
+            ret = True
+
+        return ret
+
+    def is_clear(self):
+
+        ret = False
+
+        if [v for (k, v,) in self.state.items()].count(None) == 3:
+            ret = True
+
+        return ret
+
+    def get_state(self):
+
+        return self.state
+
+    def add_decision(self, position, val):
+
+        if self.state[position] is None:
+            self.state[position] = val
+
 
 class TimerState(object):
 
@@ -29,6 +59,9 @@ class TimerState(object):
         if not self.stopped and self.cur_seconds > 0:
             self.cur_seconds -= 1
 
+        # re-register handler
+        return True
+
     def reset(self):
 
         self.set_seconds(LiftTimerState.default_init_seconds)
@@ -40,6 +73,10 @@ class TimerState(object):
     def stop(self):
  
         self.stopped = True
+
+    def is_stopped(self):
+
+        return self.stopped
 
     def increment(self):
 

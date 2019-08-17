@@ -75,6 +75,7 @@ class LightsWindow(AbsAppWindow):
 
         self.light_box = Gtk.Box(spacing=self.screen_width * widget_scaling_dict['light_spacing'])
 
+        #TODO - use a dict with light positions
         self.left_light_image = Gtk.Image()
         self.light_box.pack_start(self.left_light_image, False, False, 0)
         self.head_light_image = Gtk.Image()
@@ -88,6 +89,8 @@ class LightsWindow(AbsAppWindow):
 
     def show_lights(self, light_state_obj):
 
+        #TODO - fix this with new light state semantics
+        #TODO - use a dict with light positions
         # make certain we have decisions from all three
         if not(light_state_obj.left is None or light_state_obj.head is None or light_state_obj.right is None):
             
@@ -114,3 +117,4 @@ class LightsWindow(AbsAppWindow):
             self.right_light_image.show()
 
             self.show()
+
