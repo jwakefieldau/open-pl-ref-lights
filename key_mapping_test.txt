@@ -1,0 +1,25 @@
+james@james-ws-ubuntu:~/open-pl-ref-lights$ python3 ./evdev_test.py 
+:/dev/input/event19::USB gamepad           ::usb-0000:00:14.0-3.2/input0:
+-----------------------
+capabilities
+-----------------------
+{('EV_KEY', 1): [(['BTN_JOYSTICK', 'BTN_TRIGGER'], 288), ('BTN_THUMB', 289), ('BTN_THUMB2', 290), ('BTN_TOP', 291), ('BTN_TOP2', 292), ('BTN_PINKIE', 293), ('BTN_BASE', 294), ('BTN_BASE2', 295), ('BTN_BASE3', 296), ('BTN_BASE4', 297)], ('EV_SYN', 0): [('SYN_REPORT', 0), ('SYN_CONFIG', 1), ('SYN_DROPPED', 3), ('?', 4)], ('EV_MSC', 4): [('MSC_SCAN', 4)], ('EV_ABS', 3): [(('ABS_X', 0), AbsInfo(value=127, min=0, max=255, fuzz=0, flat=15, resolution=0)), (('ABS_Y', 1), AbsInfo(value=127, min=0, max=255, fuzz=0, flat=15, resolution=0))]}
+-----------------------
+-----------------------
+detected USB gamepad, listening for events
+-----------------------
+press the white light key
+EV_KEY event: 291
+press the red light key
+EV_KEY event: 289
+press the clear lights key
+EV_KEY event: 288
+press the start/stop timer key
+EV_KEY event: 297
+press the clear timer key
+EV_KEY event: 296
+press the increment timer key
+EV_KEY event: 292
+press the decrement timer key
+EV_KEY event: 293
+

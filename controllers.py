@@ -3,12 +3,12 @@ import evdev
 button_maps = {
     'USBSNESController': {
         # map evdev key events to our common button values
-        FOOBAR: 'inc_timer',
-        FOOBAR: 'dec_timer',
-        FOOBAR: 'stopstart_timer',
-        FOOBAR: 'reset_timer',
-        FOOBAR: 'red_light',
-        FOOBAR: 'white_light',
-        FOOBAR: 'clear_lights',
+        292: 'inc_timer',
+        293: 'dec_timer',
+        297: 'stopstart_timer',
+        296: 'reset_timer',
+        289: 'red_light',
+        291: 'white_light',
+        288: 'clear_lights',
     }
 }
