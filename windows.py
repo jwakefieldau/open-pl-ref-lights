@@ -75,46 +75,32 @@ class LightsWindow(AbsAppWindow):
 
         self.light_box = Gtk.Box(spacing=self.screen_width * widget_scaling_dict['light_spacing'])
 
-        #TODO - use a dict with light positions
-        self.left_light_image = Gtk.Image()
-        self.light_box.pack_start(self.left_light_image, False, False, 0)
-        self.head_light_image = Gtk.Image()
-        self.light_box.pack_start(self.head_light_image, False, False, 0)
-        self.right_light_image = Gtk.Image()
-        self.light_box.pack_start(self.right_light_image, False, False, 0)
-
+        self.light_dict = {}
+        for k in ['left', 'head', 'right']:
+            self.light_dict[k] = Gtk.Image()
+            self.light_box.pack_start(self.light_dict[k], False, False, 0)
+        
         self.vbox.pack_start(self.light_box, False, False, 0)
 
         self.add_next_att_timer()
 
     def show_lights(self, light_state_obj):
 
-        #TODO - fix this with new light state semantics
-        #TODO - use a dict with light positions
-        # make certain we have decisions from all three
-        if not(light_state_obj.left is None or light_state_obj.head is None or light_state_obj.right is None):
+        if light_state_obj.is_complete():
+            state_dict = light_state_obj.get_state()
             
-            if light_state_obj.left:
-                self.left_light_image.set_from_pixbuf(self.white_light_pixbuf)
+            for position in ['left', 'head', 'right']:
+                if state_dict[position] == True:
+                    self.light_dict[position].set_from_pixbuf(self.white_light_pixbuf)
+                elif state_dict[position] == False:
+                    self.light_dict[position].set_from_pixbuf(self.red_light_pixbuf)
 
-            else:
-                self.left_light_image.set_from_pixbuf(self.red_light_pixbuf)
-            
-            if light_state_obj.head:
-                self.head_light_image.set_from_pixbuf(self.white_light_pixbuf)
-
-            else:
-                self.head_light_image.set_from_pixbuf(self.red_light_pixbuf)
-        
-            if light_state_obj.right:
-                self.right_light_image.set_from_pixbuf(self.white_light_pixbuf) 
-
-            else:
-                self.right_light_image.set_from_pixbuf(self.red_light_pixbuf)
-
-            self.left_light_image.show()
-            self.head_light_image.show()
-            self.right_light_image.show()
-
+                self.light_dict[position].show()
+ 
             self.show()
+
+    def hide_lights(self):
+        
+        for position in ['left', 'head', 'right']:
+            self.light_dict[position].hide()
 

@@ -52,9 +52,13 @@ class PollAndAct(object):
                 controller_events = dev.read()
                 
                 for controller_event in controller_events:
-                    #TODO - interpret and act on events using controller map based on what the state of everything is
-                    #event_button = ...
+                    # interpret and act on events using controller map based on what the state of everything is
 
+                    # skip anything that's not a key down
+                    if not (controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1):
+                        continue
+
+                    event_button = controller_event.code
                     mapped_button = self.button_map[event_button]
 
                     # if no ref has entered a decision, ie: we are clear, then 
@@ -105,17 +109,24 @@ class PollAndAct(object):
                             #hide lift timer window, show lights window but with lights hidden
                             self.lift_timer_window.hide()
                             self.lights_window.show()
-                            #TODO - does this have the desired effect of showing the lights window but nothing in it?  Or do we need a hide_lights() method?
-                            self.lights_window.hide_all()
+                            self.lights_window.hide_lights()
 
                         if self.lights_state.is_complete():
-                            #TODO - show lights and reset next attempt timer
+                            self.lights_window.show_lights(self.lights_state)
+                            self.next_att_timer_state.reset()
+                            self.next_att_timer_state.start()
 
 
                     # if the ref decision is complete, then
                     # * head ref can clear the lights, which then hides the lights and lights  window, shows the lift timer window
                     else:
-                        #TODO
+                        if position == 'head':
+                            if mapped_button == 'clear_lights':
+                                self.lights_window.hide_lights()
+                                self.lights_window.hide()
+                                self.lift_timer_window.show()
+                                self.lift_timer_state.reset()
+                                self.lift_timer_state.start()
 
             except BlockingIOError:
                 pass
