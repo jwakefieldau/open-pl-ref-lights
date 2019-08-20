@@ -179,7 +179,6 @@ class PollAndAct(object):
                                 self.lights_window.hide()
                                 self.lift_timer_window.show()
                                 self.lift_timer_state.reset()
-                                self.lift_timer_state.start()
 
             except BlockingIOError:
                 pass

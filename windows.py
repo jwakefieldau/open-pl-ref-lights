@@ -15,7 +15,7 @@ class AbsAppWindow(Gtk.Window):
         self.screen_width = screen.width()
         self.screen_height = screen.height()
 
-        self.next_att_timer_label_size = int(int(self.screen_height) * float(next_att_timer_scale)) * 1000
+        self.next_att_timer_label_size = self.scale(self.screen_height, next_att_timer_scale) * 1000
 
         self.black_color = Gdk.Color(red=0, green=0, blue=0)
         self.bg_eventbox = Gtk.EventBox()
@@ -27,7 +27,12 @@ class AbsAppWindow(Gtk.Window):
         self.vbox.show()
  
         self.fullscreen()
+
+    def scale(self, dimension, factor):
+
+        scaled_dimension = int(int(dimension) * float(factor))
         
+        return scaled_dimension
 
     def add_next_att_timer(self):
 
@@ -54,7 +59,7 @@ class LiftTimerWindow(AbsAppWindow):
     
         AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
 
-        self.lift_timer_label_size = int(int(self.screen_height) * float(widget_scaling_dict['lift_timer_scale'])) * 1000
+        self.lift_timer_label_size = self.scale(self.screen_height, widget_scaling_dict['lift_timer_scale']) * 1000
         self.lift_timer_label = Gtk.Label()
         self.vbox.pack_start(self.lift_timer_label, False, False, 0)
 
@@ -82,13 +87,13 @@ class LightsWindow(AbsAppWindow):
     
         AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
 
-        light_width = int(int(self.screen_width) * float(widget_scaling_dict['light_scale']))
+        light_width = self.scale(self.screen_width, widget_scaling_dict['light_scale'])
         light_height = light_width
        
         self.red_light_pixbuf = GdkPixbuf.Pixbuf.new_from_file(light_image_dict['red']).scale_simple(light_width, light_height, GdkPixbuf.InterpType.BILINEAR)
         self.white_light_pixbuf = GdkPixbuf.Pixbuf.new_from_file(light_image_dict['white']).scale_simple(light_width, light_height, GdkPixbuf.InterpType.BILINEAR)  
 
-        self.light_box = Gtk.Box(spacing=int(int(self.screen_width) * float(widget_scaling_dict['light_spacing_scale'])))
+        self.light_box = Gtk.Box(spacing=self.scale(self.screen_width, widget_scaling_dict['light_spacing_scale']))
 
         self.light_dict = {}
         for k in ['left', 'head', 'right']:
