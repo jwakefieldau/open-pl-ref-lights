@@ -42,10 +42,8 @@ class LightsState(object):
 
 class TimerState(object):
 
-    default_init_seconds = 60
-    default_increment_seconds = 60
    
-    def __init__(self, init_seconds=LiftTimerState.default_init_seconds):
+    def __init__(self, init_seconds=60):
 
         self.set_seconds(init_seconds)
         self.stopped = True
@@ -59,20 +57,24 @@ class TimerState(object):
         if not self.stopped and self.cur_seconds > 0:
             self.cur_seconds -= 1
 
-        # re-register handler
-        return True
-
     def reset(self):
 
-        self.set_seconds(LiftTimerState.default_init_seconds)
+        self.set_seconds(60)
 
     def start(self):
- 
+     
         self.stopped = False
+        
+        #DEBUG
+        print('started timer')
 
     def stop(self):
  
         self.stopped = True
+
+        #DEBUG
+        print('stopped timer')
+
 
     def is_stopped(self):
 
@@ -81,17 +83,17 @@ class TimerState(object):
     def increment(self):
 
         if self.stopped:
-            self.set_seconds(self.cur_seconds + LiftTimerState.default_increment_seconds)
+            self.set_seconds(self.cur_seconds + 60)
 
     def decrement(self):
 
         if self.stopped:
 
-            if self.cur_seconds - LiftTimerState.default_increment_seconds < 0:
+            if self.cur_seconds - 60 < 0:
                 self.set_seconds(0)
 
             else:
-                self.set_seconds(self.cur_seconds - LiftTimerState.default_increment_seconds)
+                self.set_seconds(self.cur_seconds - 60)
 
     def timer_str(self):
 
