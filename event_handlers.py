@@ -160,8 +160,11 @@ class PollAndAct(object):
 
                         if self.lights_state.is_complete():
                             self.lights_window.show_lights(self.lights_state)
+                            self.lift_timer_state.stop()
+                            self.lift_timer_state.reset()
                             self.next_att_timer_state.reset()
                             self.next_att_timer_state.start()
+                            self.lights_window.show_next_att_timer()
 
                         else:
                             #hide lift timer window, show lights window but with lights hidden
@@ -177,8 +180,8 @@ class PollAndAct(object):
                             if mapped_button == 'clear_lights':
                                 self.lights_window.hide_lights()
                                 self.lights_window.hide()
+                                self.lift_timer_window.show_next_att_timer()
                                 self.lift_timer_window.show()
-                                self.lift_timer_state.reset()
 
             except BlockingIOError:
                 pass

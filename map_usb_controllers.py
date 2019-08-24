@@ -5,7 +5,6 @@ devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
 
 for dev in devices:
     print(dev)
-    #print(dev.path, dev.name, dev.phys)
 
 left_usb_path = None
 head_usb_path = None
@@ -47,8 +46,8 @@ while (not left_usb_path) or (not head_usb_path) or (not right_usb_path):
         except BlockingIOError:
             pass
 
-print("left_usb_path='{}'".format(left_usb_path))       
-print("head_usb_path='{}'".format(head_usb_path))       
-print("right_usb_path='{}'".format(right_usb_path))       
+print("left_usb_path={}".format(left_usb_path))       
+print("head_usb_path={}".format(head_usb_path))       
+print("right_usb_path={}".format(right_usb_path))       
     
         
