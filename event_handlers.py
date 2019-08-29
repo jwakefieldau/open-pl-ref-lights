@@ -30,7 +30,7 @@ class TimerHandler(object):
              #DEBUG
              print('lights window visible')
 
-             self.lift_timer_window.update_next_att_timer(self.next_att_timer_state.timer_str())
+             self.lights_window.update_next_att_timer(self.next_att_timer_state.timer_str())
 
         #make sure we always tick again
         return True
@@ -95,6 +95,12 @@ class PollAndAct(object):
 
                     #DEBUG
                     print('mapped event to position {} and button {}'.format(position, mapped_button))
+
+                    #DEBUG - show state of lift timer and lights
+                    print('STATE:')
+                    print('lift timer stopped? {}'.format(self.lift_timer_state.is_stopped()))
+                    print('lights clear? {}'.format(self.lights_state.is_clear()))
+                    print('lights complete? {}'.format(self.lights_state.is_complete()))
 
                     # if no ref has entered a decision, ie: we are clear, then 
                     # * head ref can start/stop the lift timer, 
@@ -162,6 +168,7 @@ class PollAndAct(object):
                             self.lights_window.show_lights(self.lights_state)
                             self.lift_timer_state.stop()
                             self.lift_timer_state.reset()
+                            self.next_att_timer_state.stop()
                             self.next_att_timer_state.reset()
                             self.next_att_timer_state.start()
                             self.lights_window.show_next_att_timer()
@@ -174,10 +181,11 @@ class PollAndAct(object):
 
 
                     # if the ref decision is complete, then
-                    # * head ref can clear the lights, which then hides the lights and lights  window, shows the lift timer window
+                    # * head ref can clear the lights, which then hides the lights and lights  window, and shows the lift timer window
                     else:
                         if position == 'head':
                             if mapped_button == 'clear_lights':
+                                self.lights_state.clear()
                                 self.lights_window.hide_lights()
                                 self.lights_window.hide()
                                 self.lift_timer_window.show_next_att_timer()

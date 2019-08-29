@@ -43,13 +43,22 @@ class AbsAppWindow(Gtk.Window):
         self.vbox.pack_start(self.next_att_timer_box, False, False, 0)
 
     def update_next_att_timer(self, timer_str):
+
+        #DEBUG
+        print('about to update next attempt timer with string {} at size {}'.format(timer_str, self.next_att_timer_label_size))
+        print('next attempt timer label is visible: {}'.format(self.next_att_timer_label.props.visible))
     
         self.next_att_timer_label.set_markup('<span size="{}" foreground="white">Next attempt submission: {}</span>'.format(self.next_att_timer_label_size, timer_str))   
 
     def show_next_att_timer(self):
+        self.next_att_timer_box.show()
         self.next_att_timer_label.show()
 
+        #DEBUG
+        print('called show_next_att_timer(), next attempt timer is now visible: {}'.format(self.next_att_timer_label.props.visible))
+
     def hide_next_att_timer(self):
+        self.next_att_timer_box.hide()
         self.next_att_timer_label.hide()
 
 
@@ -61,7 +70,7 @@ class LiftTimerWindow(AbsAppWindow):
 
         self.lift_timer_label_size = self.scale(self.screen_height, widget_scaling_dict['lift_timer_scale']) * 1000
         self.lift_timer_label = Gtk.Label()
-        self.vbox.pack_start(self.lift_timer_label, False, False, 0)
+        self.vbox.pack_start(self.lift_timer_label, True, False, 0)
 
         self.add_next_att_timer()
 
@@ -71,6 +80,7 @@ class LiftTimerWindow(AbsAppWindow):
         print('about to show lift timer label')
 
         self.lift_timer_label.show()
+        self.next_att_timer_box.show()
         self.show()
 
     def update_lift_timer(self, timer_str):
@@ -98,9 +108,9 @@ class LightsWindow(AbsAppWindow):
         self.light_dict = {}
         for k in ['left', 'head', 'right']:
             self.light_dict[k] = Gtk.Image()
-            self.light_box.pack_start(self.light_dict[k], False, False, 0)
+            self.light_box.pack_start(self.light_dict[k], True, False, 0)
         
-        self.vbox.pack_start(self.light_box, False, False, 0)
+        self.vbox.pack_start(self.light_box, True, False, 0)
 
         self.add_next_att_timer()
 
