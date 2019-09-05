@@ -147,3 +147,16 @@ class LightsWindow(AbsAppWindow):
         for position in ['left', 'head', 'right']:
             self.light_dict[position].hide()
 
+
+class MapControllersWindow(AbsAppWindow):
+
+    def __init__(self, widget_scaling_dict):
+
+        AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
+        self.prompt_label = Gtk.Label()
+        self.prompt_label_size = self.scale(self.screen_height, widget_scaling_dict['controller_prompt_scale']) * 1000
+        self.vbox.pack_start(self.prompt_label, True, False, 0)
+
+    def show_controller_prompt(self, position):
+
+        self.prompt_label.set_markup('<span size="{}" forecolor="white">Press any button on the {} controller</span>'.format(self.prompt_label_size, position))

@@ -37,6 +37,7 @@ class TimerHandler(object):
 
 class PollAndAct(object):
 
+    #TODO - fix this when ready - don't need controller config, pass controller state instead
     def __init__(self, controller_config, button_maps, next_att_timer_state, lift_timer_state, lights_state, lift_timer_window, lights_window):
 
         self.button_map = button_maps[controller_config['type']]
@@ -50,6 +51,7 @@ class PollAndAct(object):
         for path in evdev.list_devices():
             cur_dev = evdev.InputDevice(path)
 
+        #TODO - add everything available to an initial controller list instead of mapping positions here
             if cur_dev.phys == controller_config['left_usb_path']:
                 self.controller_map['left'] = cur_dev
 
@@ -72,6 +74,8 @@ class PollAndAct(object):
 
     def poll(self):
 
+        #TODO - iterate over available devices in controller state, if we're unmapped, map them and show appropriate prompts until
+        # all mapped, then show lift timer
         for (position, dev,) in self.controller_map.items():
             try:
 

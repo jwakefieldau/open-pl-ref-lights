@@ -107,3 +107,68 @@ class TimerState(object):
             ret_str = '{}:{}'.format(minutes, seconds)
 
         return ret_str
+
+
+class ControllersState(object):
+
+    def __init__(self):
+
+        self.input_device_list = []
+        
+    def add_controller(self, controller_dict):
+
+        self.input_device_list.append(controller_dict)
+
+    def is_pos_mapped(self, position):
+
+        ret = False
+
+        for cur_dev in self.input_device_list:
+            cur_pos = cur_dev.get('position')
+ 
+            if cur_pos == position:
+                ret = True
+                break
+
+        return ret
+
+    def is_all_mapped(self, check_none=False):
+
+        ret = False
+
+        all_mapped = False
+
+        left_mapped = False
+        head_mapped = False
+        right_mapped = False        
+
+        for cur_dev in self.input_device_list:
+            cur_pos = cur_dev.get('position')
+
+            if cur_pos == 'left':
+                left_mapped = True
+
+            if cur_pos == 'head':
+                head_mapped = True
+            
+            if cur_pos == 'right':
+                right_mapped = True
+
+            if left_mapped and head_mapped and right_mapped:
+                all_mapped = True
+
+        if all_mapped and not check_none:
+            ret = True
+
+        elif (not left_mapped) and (not head_mapped) and (not right_mapped) and check_none:
+            ret = True
+
+        return ret
+
+    def is_none_mapped(self):
+
+        return self.is_all_mapped(check_none=True)
+    
+    def get_controllers(self):
+
+        return self.input_device_list
