@@ -1,8 +1,5 @@
 import evdev
 
-#DEBUG
-import datetime
-
 class TimerHandler(object):
 
     def __init__(self, lift_timer_window, lights_window, next_att_timer_state, lift_timer_state):
@@ -54,13 +51,14 @@ class PollAndAct(object):
     def poll_map_controllers(self):
 
         #DEBUG
-        #print('Attempting to map controllers')
+        print('Attempting to map controllers')
 
-        input_device_list = [evdev.InputDevice(path) for path in evdev.list_devices()]
+        if not self.controllers_state.is_mapping():
+            self.controllers_state.begin_mapping([evdev.InputDevice(path) for path in evdev.list_devices()])
 
         #TODO see if this works if we just hog the main thread until we're done 
         #NOTE - it doesn't - the label never gets rendered
-        if not self.controllers_state.check_controllers(input_device_list):
+        if not self.controllers_state.check_controllers():
             controller_dict = self.controllers_state.get_controllers()
 
             if not controller_dict.get('left'):
@@ -79,7 +77,7 @@ class PollAndAct(object):
             self.map_controllers_window.show_controller_prompt(cur_position)
 
             #NOTE - return fast
-            for cur_dev in input_device_list:
+            for cur_dev in self.controllers_state.get_candidate_devices():
 
                 try:
                     controller_events = cur_dev.read()
@@ -111,7 +109,8 @@ class PollAndAct(object):
             #            pass
 
             # if all controllers are now mapped, show the lift timer window
-            if self.controllers_state.check_controllers(input_device_list):
+            if self.controllers_state.check_controllers():
+                self.controllers_state.end_mapping()
                 self.map_controllers_window.hide()
                 self.lift_timer_window.show()
 

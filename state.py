@@ -119,8 +119,28 @@ class ControllersState(object):
 
         # key is ref position, val is InputDevice
         self.controller_dict = {}
+        self.candidate_devices = []
+        self.mapping_underway = False
 
-    def check_controllers(self, new_input_device_list):
+    def begin_mapping(self, candidate_devices):
+
+        self.candidate_devices = candidate_devices
+        self.mapping_underway = True
+
+    def end_mapping(self):
+
+        self.candidate_devices = []
+        self.mapping_underway = False
+
+    def is_mapping(self):
+
+        return self.mapping_underway
+
+    def get_candidate_devices(self):
+
+        return self.candidate_devices
+
+    def check_controllers(self, new_input_device_list=None):
 
         #DEBUG
         #print('About to check to see if all controllers are mapped')
@@ -130,7 +150,11 @@ class ControllersState(object):
         #DEBUG
         #print('Currently mapped controllers: {}'.format(str(self.controller_dict)))
 
-        if len(self.controller_dict.items()) < 3:
+        if not new_input_device_list:
+            new_input_device_list = self.candidate_devices
+
+        # if we have te right number of controllers mapped, see if any have dropped off
+        if len(self.controller_dict.items()) == 3:
 
             # See if any mapped controllers are missing from the newly polled list
             cur_phys_set = set([input_device.phys for (position, input_device,) in self.controller_dict.items()])
