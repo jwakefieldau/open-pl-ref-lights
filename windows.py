@@ -160,3 +160,6 @@ class MapControllersWindow(AbsAppWindow):
     def show_controller_prompt(self, position):
 
         self.prompt_label.set_markup('<span size="{}" forecolor="white">Press any button on the {} controller</span>'.format(self.prompt_label_size, position))
+        self.prompt_label.show()
+        self.vbox.show()
+        self.show()

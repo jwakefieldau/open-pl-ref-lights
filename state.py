@@ -111,64 +111,47 @@ class TimerState(object):
 
 class ControllersState(object):
 
+    # on poll(), compare the devices present against the ones mapped if any
+    # this way we can determine if any have gone away and/or if we need to 
+    # (re)map
+
     def __init__(self):
 
-        self.input_device_list = []
-        
-    def add_controller(self, controller_dict):
+        # key is ref position, val is InputDevice
+        self.controller_dict = {}
 
-        self.input_device_list.append(controller_dict)
+    def check_controllers(self, new_input_device_list):
 
-    def is_pos_mapped(self, position):
+        ret = True
 
-        ret = False
+        if len(self.controller_dict.items()) < 3:
 
-        for cur_dev in self.input_device_list:
-            cur_pos = cur_dev.get('position')
- 
-            if cur_pos == position:
+            # See if any mapped controllers are missing from the newly polled list
+            cur_input_device_set = set([v for (k, v,) in self.controller_dict.items()])
+            new_input_device_set = set(new_input_device_list)
+   
+            # return False if we are missing some controllers that are mapped
+            if len(cur_input_device_set.difference(new_input_device_set)) > 0:
+                ret = False
+
+            # return True if all the mapped controllers are still there
+            else:
                 ret = True
-                break
+
+        # return False if we haven't mapped enough controllers yet      
+        else:
+            ret = False
 
         return ret
-
-    def is_all_mapped(self, check_none=False):
-
-        ret = False
-
-        all_mapped = False
-
-        left_mapped = False
-        head_mapped = False
-        right_mapped = False        
-
-        for cur_dev in self.input_device_list:
-            cur_pos = cur_dev.get('position')
-
-            if cur_pos == 'left':
-                left_mapped = True
-
-            if cur_pos == 'head':
-                head_mapped = True
-            
-            if cur_pos == 'right':
-                right_mapped = True
-
-            if left_mapped and head_mapped and right_mapped:
-                all_mapped = True
-
-        if all_mapped and not check_none:
-            ret = True
-
-        elif (not left_mapped) and (not head_mapped) and (not right_mapped) and check_none:
-            ret = True
-
-        return ret
-
-    def is_none_mapped(self):
-
-        return self.is_all_mapped(check_none=True)
-    
+        
     def get_controllers(self):
 
-        return self.input_device_list
+        return self.controller_dict
+
+    def map_controller(self, input_device, position):
+
+        if position in ['left', 'head', 'right']:
+            self.controller_dict[position] = input_device
+
+        else:
+            raise ValueError('tried to map invalid controller position: {}'.format(position))

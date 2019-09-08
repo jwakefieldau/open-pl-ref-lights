@@ -1,3 +1,5 @@
+#TODO - move ths into a config file that can be written when we do the key mapping thing
+
 button_maps = {
     'USBSNESController': {
         # map evdev key events to our common button values

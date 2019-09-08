@@ -37,46 +37,53 @@ class TimerHandler(object):
 
 class PollAndAct(object):
 
-    #TODO - fix this when ready - don't need controller config, pass controller state instead
-    def __init__(self, controller_config, button_maps, next_att_timer_state, lift_timer_state, lights_state, lift_timer_window, lights_window):
+    def __init__(self, controller_config, button_maps, next_att_timer_state, lift_timer_state, lights_state, controllers_state, lift_timer_window, lights_window, map_controllers_window):
 
         self.button_map = button_maps[controller_config['type']]
-        self.controller_map = {}
         self.next_att_timer_state = next_att_timer_state
         self.lift_timer_state = lift_timer_state
         self.lights_state = lights_state
+        self.controllers_state = controllers_state
         self.lift_timer_window = lift_timer_window
         self.lights_window = lights_window
-
-        for path in evdev.list_devices():
-            cur_dev = evdev.InputDevice(path)
-
-        #TODO - add everything available to an initial controller list instead of mapping positions here
-            if cur_dev.phys == controller_config['left_usb_path']:
-                self.controller_map['left'] = cur_dev
-
-                #DEBUG
-                print('mapped phys {} to left position'.format(cur_dev.phys))
-
-            elif cur_dev.phys == controller_config['head_usb_path']:
-                self.controller_map['head'] = cur_dev
-
-                #DEBUG
-                print('mapped phys {} to head position'.format(cur_dev.phys))
-
- 
-            elif cur_dev.phys == controller_config['right_usb_path']:
-                self.controller_map['right'] = cur_dev
-
-                #DEBUG
-                print('mapped phys {} to right position'.format(cur_dev.phys))
+        self.map_controllers_window = map_controllers_window
 
 
-    def poll(self):
+    def _map_controllers(self, input_device_list):
 
-        #TODO - iterate over available devices in controller state, if we're unmapped, map them and show appropriate prompts until
-        # all mapped, then show lift timer
-        for (position, dev,) in self.controller_map.items():
+        # this will be called each time poll() is called by the timer until controllers are mapped
+
+        controller_dict = self.controllers_state.get_controllers()
+
+        if not controller_dict.get('left'):
+            cur_position = 'left'
+
+        elif not controller_dict.get('head'):
+            cur_position = 'head'    
+  
+        elif not controller_dict.get('right'):
+            cur_position = 'right' 
+
+        # show controller prompt
+        self.map_controllers_window.show_controller_prompt(cur_position)
+
+        for cur_dev in input_device_list:
+            controller_events = cur_dev.read()
+
+            # when we have a key down event, map that input device to the current position
+            for controller_event in controller_events:
+                if controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1:
+                    self.controllers_state.map_controller(cur_dev, cur_position)
+
+                    # if all controllers are now mapped, show the lift timer window
+                    if self.controllers_state.check_controllers(input_device_list):
+                        self.map_controllers_window.hide()
+                        self.lift_timer_window.show()
+
+   
+    def _process_controller_input(self):
+   
+        for (position, dev,) in self.controllers_state.get_controllers().items():
             try:
 
                 #DEBUG
@@ -198,8 +205,17 @@ class PollAndAct(object):
             except BlockingIOError:
                 pass
 
-        #DEBUG
-        #print('done polling controllers')
-           
-        # make sure we run again
+   
+
+    def poll(self):
+
+        new_device_list = [evdev.InputDevice(path) for path in evdev.list_devices()]
+
+        if self.controllers_state.check_controllers(new_device_list):
+            self._process_controller_input()
+
+        else:
+            self._map_controllers(new_device_list)
+
+        # make sure we fire again
         return True
