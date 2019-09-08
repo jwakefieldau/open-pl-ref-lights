@@ -30,13 +30,20 @@ if __name__ == '__main__':
     poll_act_obj = PollAndAct(config['controllers'], button_maps, next_att_timer_state, lift_timer_state, light_state, controllers_state, lift_timer_window, lights_window, map_controllers_window)
 
     # is this fine enough resolution?
-    GObject.timeout_add(100, poll_act_obj.poll)
+    GObject.timeout_add(100, poll_act_obj.poll_map_controllers)
+
+    # is this fine enough resolution?
+    GObject.timeout_add(100, poll_act_obj.poll_controller_input)
 
     timer_handler = TimerHandler(lift_timer_window, lights_window, next_att_timer_state, lift_timer_state)
     GObject.timeout_add(1000, timer_handler.handle_tick)
 
     #show lift timer initially
     #show controller_map_window initially
+
+    #DEBUG
+    print('About to show mapping controller prompt window')
+
     map_controllers_window.show()
     #lift_timer_window.show()
 

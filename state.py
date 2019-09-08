@@ -122,16 +122,24 @@ class ControllersState(object):
 
     def check_controllers(self, new_input_device_list):
 
+        #DEBUG
+        #print('About to check to see if all controllers are mapped')
+
         ret = True
+
+        #DEBUG
+        #print('Currently mapped controllers: {}'.format(str(self.controller_dict)))
 
         if len(self.controller_dict.items()) < 3:
 
             # See if any mapped controllers are missing from the newly polled list
-            cur_input_device_set = set([v for (k, v,) in self.controller_dict.items()])
-            new_input_device_set = set(new_input_device_list)
+            cur_phys_set = set([input_device.phys for (position, input_device,) in self.controller_dict.items()])
+            new_phys_set = set([input_device.phys for input_device in new_input_device_list])
+
+            #print('Comparing physical paths for currently mapped controllers: {} against polled input devices: {}'.format(cur_phys_set, new_phys_set))
    
             # return False if we are missing some controllers that are mapped
-            if len(cur_input_device_set.difference(new_input_device_set)) > 0:
+            if len(new_phys_set.difference(cur_phys_set)) > 0:
                 ret = False
 
             # return True if all the mapped controllers are still there
@@ -141,6 +149,9 @@ class ControllersState(object):
         # return False if we haven't mapped enough controllers yet      
         else:
             ret = False
+
+        #DEBUG
+        #print('About to return {} from check_controllers()'.format(ret))
 
         return ret
         

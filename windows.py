@@ -153,13 +153,20 @@ class MapControllersWindow(AbsAppWindow):
     def __init__(self, widget_scaling_dict):
 
         AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
+
         self.prompt_label = Gtk.Label()
         self.prompt_label_size = self.scale(self.screen_height, widget_scaling_dict['controller_prompt_scale']) * 1000
         self.vbox.pack_start(self.prompt_label, True, False, 0)
 
     def show_controller_prompt(self, position):
 
-        self.prompt_label.set_markup('<span size="{}" forecolor="white">Press any button on the {} controller</span>'.format(self.prompt_label_size, position))
+        #DEBUG
+        #print('About to set controller prompt for position {} at size {}'.format(position, self.prompt_label_size))
+
+        self.prompt_label.set_markup('<span size="{}" foreground="white">Press any button on the {} controller</span>'.format(self.prompt_label_size, position))
         self.prompt_label.show()
         self.vbox.show()
         self.show()
+
+        #DEBUG
+        #print('label visibility: {}, vbox visibility: {}, window visibility: {}'.format(self.prompt_label.props.visible, self.vbox.props.visible, self.props.visible))

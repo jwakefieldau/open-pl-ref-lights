@@ -1,5 +1,8 @@
 import evdev
 
+#DEBUG
+import datetime
+
 class TimerHandler(object):
 
     def __init__(self, lift_timer_window, lights_window, next_att_timer_state, lift_timer_state):
@@ -48,40 +51,80 @@ class PollAndAct(object):
         self.lights_window = lights_window
         self.map_controllers_window = map_controllers_window
 
+    def poll_map_controllers(self):
 
-    def _map_controllers(self, input_device_list):
+        #DEBUG
+        #print('Attempting to map controllers')
 
-        # this will be called each time poll() is called by the timer until controllers are mapped
+        input_device_list = [evdev.InputDevice(path) for path in evdev.list_devices()]
 
-        controller_dict = self.controllers_state.get_controllers()
+        #TODO see if this works if we just hog the main thread until we're done 
+        #NOTE - it doesn't - the label never gets rendered
+        if not self.controllers_state.check_controllers(input_device_list):
+            controller_dict = self.controllers_state.get_controllers()
 
-        if not controller_dict.get('left'):
-            cur_position = 'left'
+            if not controller_dict.get('left'):
+                cur_position = 'left'
 
-        elif not controller_dict.get('head'):
-            cur_position = 'head'    
+            elif not controller_dict.get('head'):
+                cur_position = 'head'    
   
-        elif not controller_dict.get('right'):
-            cur_position = 'right' 
+            elif not controller_dict.get('right'):
+                cur_position = 'right' 
 
-        # show controller prompt
-        self.map_controllers_window.show_controller_prompt(cur_position)
+            # show controller prompt
+            #DEBUG
+            print('About to show controller prompt for position: {}'.format(cur_position))
 
-        for cur_dev in input_device_list:
-            controller_events = cur_dev.read()
+            self.map_controllers_window.show_controller_prompt(cur_position)
 
-            # when we have a key down event, map that input device to the current position
-            for controller_event in controller_events:
-                if controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1:
-                    self.controllers_state.map_controller(cur_dev, cur_position)
+            #NOTE - return fast
+            for cur_dev in input_device_list:
 
-                    # if all controllers are now mapped, show the lift timer window
-                    if self.controllers_state.check_controllers(input_device_list):
-                        self.map_controllers_window.hide()
-                        self.lift_timer_window.show()
+                try:
+                    controller_events = cur_dev.read()
+
+                    # when we have a key down event, map that input device to the current position
+                    for controller_event in controller_events:
+                        if controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1:
+                            self.controllers_state.map_controller(cur_dev, cur_position)
+
+                except BlockingIOError:
+                    pass
+
+
+            #NOTE - this is risky - we hog the main thread because we don't need any extra GTK stuff going on
+            #got_cur_position = False
+            #while not got_cur_position:
+            #    for cur_dev in input_device_list:
+
+            #        try:
+            #            controller_events = cur_dev.read()
+
+                        # when we have a key down event, map that input device to the current position
+            #            for controller_event in controller_events:
+            #                if controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1:
+            #                    self.controllers_state.map_controller(cur_dev, cur_position)
+            #                    got_cur_position = True
+
+            #        except BlockingIOError:
+            #            pass
+
+            # if all controllers are now mapped, show the lift timer window
+            if self.controllers_state.check_controllers(input_device_list):
+                self.map_controllers_window.hide()
+                self.lift_timer_window.show()
+
+
+        # make sure we fire again
+        return True
 
    
-    def _process_controller_input(self):
+    def poll_controller_input(self):
+
+        # bail if controllers aren't mapped yet
+        if len(self.controllers_state.get_controllers().items()) < 3:
+            return True
    
         for (position, dev,) in self.controllers_state.get_controllers().items():
             try:
@@ -205,11 +248,23 @@ class PollAndAct(object):
             except BlockingIOError:
                 pass
 
+
+        # make sure we fire again
+        return True
+
+
    
 
+    #TODO - remove this - input polling and mapping are separate polls
     def poll(self):
 
+        #DEBUG
+        #print(datetime.datetime.now())
+
         new_device_list = [evdev.InputDevice(path) for path in evdev.list_devices()]
+
+        #DEBUG
+        #print('Polled device list: {}'.format(new_device_list))
 
         if self.controllers_state.check_controllers(new_device_list):
             self._process_controller_input()
