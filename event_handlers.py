@@ -50,14 +50,11 @@ class PollAndAct(object):
 
     def poll_map_controllers(self):
 
-        #DEBUG
-        print('Attempting to map controllers')
-
+        # maintain state of mapping operation so that we don't have to redo this every time the function
+        # enters on the timer interval
         if not self.controllers_state.is_mapping():
             self.controllers_state.begin_mapping([evdev.InputDevice(path) for path in evdev.list_devices()])
 
-        #TODO see if this works if we just hog the main thread until we're done 
-        #NOTE - it doesn't - the label never gets rendered
         if not self.controllers_state.check_controllers():
             controller_dict = self.controllers_state.get_controllers()
 
@@ -76,7 +73,8 @@ class PollAndAct(object):
 
             self.map_controllers_window.show_controller_prompt(cur_position)
 
-            #NOTE - return fast
+            #NOTE - return fast - we maintain state of mapping operation so
+            # we don't have to poll for the list of evdev devices every time we enter
             for cur_dev in self.controllers_state.get_candidate_devices():
 
                 try:
@@ -91,24 +89,7 @@ class PollAndAct(object):
                     pass
 
 
-            #NOTE - this is risky - we hog the main thread because we don't need any extra GTK stuff going on
-            #got_cur_position = False
-            #while not got_cur_position:
-            #    for cur_dev in input_device_list:
-
-            #        try:
-            #            controller_events = cur_dev.read()
-
-                        # when we have a key down event, map that input device to the current position
-            #            for controller_event in controller_events:
-            #                if controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1:
-            #                    self.controllers_state.map_controller(cur_dev, cur_position)
-            #                    got_cur_position = True
-
-            #        except BlockingIOError:
-            #            pass
-
-            # if all controllers are now mapped, show the lift timer window
+            # if all controllers are now mapped, clear the state of the mapping and show the lift timer window
             if self.controllers_state.check_controllers():
                 self.controllers_state.end_mapping()
                 self.map_controllers_window.hide()
@@ -118,11 +99,11 @@ class PollAndAct(object):
         # make sure we fire again
         return True
 
-   
+	   
     def poll_controller_input(self):
 
         # bail if controllers aren't mapped yet
-        if len(self.controllers_state.get_controllers().items()) < 3:
+        if not self.controllers_state.all_mapped():
             return True
    
         for (position, dev,) in self.controllers_state.get_controllers().items():
@@ -144,7 +125,11 @@ class PollAndAct(object):
                         continue
 
                     event_button = controller_event.code
-                    mapped_button = self.button_map[event_button]
+                    mapped_button = self.button_map.get(event_button)
+
+                    # keep going on an unmapped button
+                    if not mapped_button:
+                        continue
 
                     #DEBUG
                     print('mapped event to position {} and button {}'.format(position, mapped_button))

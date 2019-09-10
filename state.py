@@ -156,14 +156,16 @@ class ControllersState(object):
         # if we have te right number of controllers mapped, see if any have dropped off
         if len(self.controller_dict.items()) == 3:
 
+            #NOTE - use path because phys isn't guaranteed unique (Bluetooth MAC)
+
             # See if any mapped controllers are missing from the newly polled list
-            cur_phys_set = set([input_device.phys for (position, input_device,) in self.controller_dict.items()])
-            new_phys_set = set([input_device.phys for input_device in new_input_device_list])
+            cur_path_set = set([input_device.path for (position, input_device,) in self.controller_dict.items()])
+            new_path = set([input_device.path for input_device in new_input_device_list])
 
             #print('Comparing physical paths for currently mapped controllers: {} against polled input devices: {}'.format(cur_phys_set, new_phys_set))
    
             # return False if we are missing some controllers that are mapped
-            if len(new_phys_set.difference(cur_phys_set)) > 0:
+            if len(new_path_set.difference(cur_path_set)) > 0:
                 ret = False
 
             # return True if all the mapped controllers are still there
@@ -182,6 +184,10 @@ class ControllersState(object):
     def get_controllers(self):
 
         return self.controller_dict
+
+    def all_mapped(self):
+  
+        return (self.controller_dict.get('left') and self.controller_dict.get('head') and self.controller_dict.get('right'))
 
     def map_controller(self, input_device, position):
 
