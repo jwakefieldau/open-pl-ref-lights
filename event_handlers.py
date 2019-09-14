@@ -1,5 +1,11 @@
 import evdev
 
+class UIHandler(object):
+
+    def null_handler(self, widget, event):
+    
+        return True
+
 class TimerHandler(object):
 
     def __init__(self, lift_timer_window, lights_window, next_att_timer_state, lift_timer_state):
@@ -39,7 +45,6 @@ class PollAndAct(object):
 
     def __init__(self, controller_config, button_maps, next_att_timer_state, lift_timer_state, lights_state, controllers_state, lift_timer_window, lights_window, map_controllers_window):
 
-        self.button_map = button_maps[controller_config['type']]
         self.next_att_timer_state = next_att_timer_state
         self.lift_timer_state = lift_timer_state
         self.lights_state = lights_state
@@ -125,6 +130,7 @@ class PollAndAct(object):
                         continue
 
                     event_button = controller_event.code
+                    button_map = button_maps[dev.name]
                     mapped_button = self.button_map.get(event_button)
 
                     # keep going on an unmapped button
