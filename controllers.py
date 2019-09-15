@@ -1,6 +1,7 @@
 #TODO - move ths into a config file that can be written when we do the key mapping thing
 
 button_maps = {
+    #TODO - fix this to whatever the name actually is
     'USBSNESController': {
         # map evdev key events to our common button values
         292: 'inc_timer',
@@ -20,4 +21,9 @@ button_maps = {
         314: 'reset_timer', 
         315: 'stopstart_timer'
     },
+    'Logitech Pebble': {
+        272: 'red_light',
+        273: 'white_light',
+    },
+    #TODO - Logitech K380 keyboard
 }

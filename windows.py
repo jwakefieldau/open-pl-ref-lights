@@ -4,13 +4,17 @@ from gi.repository import Gtk, Gdk, GdkPixbuf
 
 class AbsAppWindow(Gtk.Window):
 
-    def __init__(self, next_att_timer_scale):
+    def __init__(self, next_att_timer_scale, ui_handler):
 
         if self.__class__.__name__ == 'AbsAppWindow':
             raise NotImplementedError('Abstract base class') 
         
         Gtk.Window.__init__(self)
     
+        # disable mouse movement and clicks in case we use them as controllers
+        self.connect('button-press-event', ui_handler.null_handler)
+        self.connect('motion-notify-event', ui_handler.null_handler)
+
         screen = self.get_screen()
         self.screen_width = screen.width()
         self.screen_height = screen.height()

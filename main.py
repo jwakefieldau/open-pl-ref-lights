@@ -5,7 +5,7 @@ from gi.repository import Gtk, GObject
 from configparser import ConfigParser
 
 from windows import LiftTimerWindow, LightsWindow, MapControllersWindow
-from event_handlers import TimerHandler, PollAndAct
+from event_handlers import TimerHandler, PollAndAct, UIHandler
 from state import TimerState, LightsState, ControllersState
 from controllers import button_maps
 
@@ -15,10 +15,12 @@ if __name__ == '__main__':
 
     config = ConfigParser()
     config.read_file(open(config_path))
+    
+    ui_handler = UIHandler()
 
-    lift_timer_window = LiftTimerWindow(config['widget_scaling'])
-    lights_window = LightsWindow(config['widget_scaling'], config['light_images'])
-    map_controllers_window = MapControllersWindow(config['widget_scaling'])
+    lift_timer_window = LiftTimerWindow(config['widget_scaling'], ui_handler)
+    lights_window = LightsWindow(config['widget_scaling'], config['light_images'], ui_handler)
+    map_controllers_window = MapControllersWindow(config['widget_scaling'], ui_handler)
 
     next_att_timer_state = TimerState()
     lift_timer_state = TimerState()
