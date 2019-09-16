@@ -159,13 +159,38 @@ class ControllersState(object):
             #NOTE - use path because phys isn't guaranteed unique (Bluetooth MAC)
 
             # See if any mapped controllers are missing from the newly polled list
-            cur_path_set = set([input_device.path for (position, input_device,) in self.controller_dict.items()])
-            new_path = set([input_device.path for input_device in new_input_device_list])
+
+            #DEBUG
+            try:
+
+                # InputDevice.path appears to now be .fn for some reason
+
+                #cur_path_set = set([input_device.path for (position, input_device,) in self.controller_dict.items()])
+                cur_path_set = set([input_device.fn for (position, input_device,) in self.controller_dict.items()])
+
+                #new_path_set = set([input_device.path for input_device in new_input_device_list])
+                new_path_set = set([input_device.fn for input_device in new_input_device_list])
+
+            #DEBUG
+            except AttributeError:
+                for (p,d,) in self.controller_dict.items():
+                    #print('mapped device: path: {} name: {} phys: {}'.format(d.path, d.name, d.phys))
+                    print('mapped device: {}:{}'.format(str(d), dir(d)))
+                for d in new_input_device_list:
+                    #print('polled device: path: {} name: {} phys: {}'.format(d.path, d.name, d.phys))
+                    print('polled device: {}:{}'.format(str(d), dir(d)))
 
             #print('Comparing physical paths for currently mapped controllers: {} against polled input devices: {}'.format(cur_phys_set, new_phys_set))
    
+            #NOTE - make sure we have the operands in the right order here - we want to make sure that nothing we have mapped is not in the polled set
             # return False if we are missing some controllers that are mapped
-            if len(new_path_set.difference(cur_path_set)) > 0:
+            #if len(new_path_set.difference(cur_path_set)) > 0:
+            if len(cur_path_set.difference(new_path_set)) > 0:
+
+
+                #DEBUG
+                print('Difference in controller mapping: {}, mapped set: {}, polled set: {}'.format(new_path_set.difference(cur_path_set), cur_path_set, new_path_set))
+
                 ret = False
 
             # return True if all the mapped controllers are still there

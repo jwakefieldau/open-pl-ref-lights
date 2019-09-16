@@ -68,9 +68,9 @@ class AbsAppWindow(Gtk.Window):
 
 class LiftTimerWindow(AbsAppWindow):
 
-    def __init__(self, widget_scaling_dict):
+    def __init__(self, widget_scaling_dict, ui_handler):
     
-        AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
+        AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'], ui_handler)
 
         self.lift_timer_label_size = self.scale(self.screen_height, widget_scaling_dict['lift_timer_scale']) * 1000
         self.lift_timer_label = Gtk.Label()
@@ -97,9 +97,9 @@ class LiftTimerWindow(AbsAppWindow):
 
 class LightsWindow(AbsAppWindow):
 
-    def __init__(self, widget_scaling_dict, light_image_dict):
+    def __init__(self, widget_scaling_dict, light_image_dict, ui_handler):
     
-        AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
+        AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'], ui_handler)
 
         light_width = self.scale(self.screen_width, widget_scaling_dict['light_scale'])
         light_height = light_width
@@ -154,9 +154,9 @@ class LightsWindow(AbsAppWindow):
 
 class MapControllersWindow(AbsAppWindow):
 
-    def __init__(self, widget_scaling_dict):
+    def __init__(self, widget_scaling_dict, ui_handler):
 
-        AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'])
+        AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'], ui_handler)
 
         self.prompt_label = Gtk.Label()
         self.prompt_label_size = self.scale(self.screen_height, widget_scaling_dict['controller_prompt_scale']) * 1000

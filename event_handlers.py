@@ -52,6 +52,7 @@ class PollAndAct(object):
         self.lift_timer_window = lift_timer_window
         self.lights_window = lights_window
         self.map_controllers_window = map_controllers_window
+        self.button_maps = button_maps
 
     def poll_map_controllers(self):
 
@@ -130,8 +131,8 @@ class PollAndAct(object):
                         continue
 
                     event_button = controller_event.code
-                    button_map = button_maps[dev.name]
-                    mapped_button = self.button_map.get(event_button)
+                    button_map = self.button_maps[dev.name]
+                    mapped_button = button_map.get(event_button)
 
                     # keep going on an unmapped button
                     if not mapped_button:
