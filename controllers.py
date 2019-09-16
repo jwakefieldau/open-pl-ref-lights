@@ -4,13 +4,13 @@ button_maps = {
     #TODO - fix this to whatever the name actually is
     'USBSNESController': {
         # map evdev key events to our common button values
-        292: 'inc_timer',
-        293: 'dec_timer',
-        297: 'stopstart_timer',
-        296: 'reset_timer',
-        289: 'red_light',
-        291: 'white_light',
-        288: 'clear_lights',
+        292: 'inc_timer', # R 
+        293: 'dec_timer', # L 
+        297: 'stopstart_timer', # start
+        296: 'reset_timer', # select
+        289: 'red_light', # A 
+        291: 'white_light', # Y
+        288: 'clear_lights', # X
     },
     '8Bitdo SN30 GamePad': {
         304: 'red_light', 
@@ -22,8 +22,16 @@ button_maps = {
         315: 'stopstart_timer'
     },
     'Logitech Pebble': {
-        272: 'red_light',
-        273: 'white_light',
+        272: 'red_light', # left button
+        273: 'white_light', # right button
     },
-    #TODO - Logitech K380 keyboard
+    'Keyboard K380': {
+        27: 'inc_timer',  # close sq bracket
+        26: 'dec_timer',  # open sq bracket
+        15: 'stopstart_timer',  # tab
+        14: 'reset_timer',  # backspace
+        42: 'red_light',  # l shift
+        54: 'white_light', # r shift
+        57: 'clear_lights' # space
+    },
 }
