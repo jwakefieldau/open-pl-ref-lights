@@ -2,7 +2,7 @@
 Powerlifting lights and timer system, Python based.  Output is a monitor/TV, input is from USB or Bluetooth devices such as gamepads or numpad keyboards.  Intended to run on a RaspberryPi
 
 ## current issues
-* change polling class to find button map based on name reported in evdev device list rather than config so we can do mice for side refs and keyboard for head ref
+* make Gtk windows always be on top
 * add logic to quit eg: ctrl+c
 * add something to do auto pairing and connection for devices matching certain criteria
 ** or not?  If we add a clean quit option then pairing can be done via keyboard

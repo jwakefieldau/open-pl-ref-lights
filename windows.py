@@ -30,6 +30,8 @@ class AbsAppWindow(Gtk.Window):
         self.bg_eventbox.show()
         self.vbox.show()
  
+        self.set_keep_above(True)
+  
         self.fullscreen()
 
     def scale(self, dimension, factor):
