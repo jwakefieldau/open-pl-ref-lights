@@ -13,11 +13,11 @@ button_maps = {
         288: 'clear_lights', # X
     },
     '8Bitdo SN30 GamePad': {
-        304: 'red_light', 
+        308: 'red_light', 
         307: 'clear_lights', 
-        308: 'white_light', 
-        310: 'inc_timer', 
-        311: 'dec_timer', 
+        304: 'white_light', 
+        311: 'inc_timer', 
+        310: 'dec_timer', 
         314: 'reset_timer', 
         315: 'stopstart_timer'
     },
