@@ -246,7 +246,7 @@ class ControllersState(object):
         ret = False
 
         if self.quit_key_hold_dt:
-            if (datetime.datetime.utcnow() - self.quit_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time)
+            if (datetime.datetime.utcnow() - self.quit_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time):
                 ret = True
 
         return ret
@@ -256,7 +256,7 @@ class ControllersState(object):
         ret = False
 
         if self.shutdown_key_hold_dt:
-            if (datetime.datetime.utcnow() - self.shutdown_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time)
+            if (datetime.datetime.utcnow() - self.shutdown_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time):
                 ret = True
 
         return ret
