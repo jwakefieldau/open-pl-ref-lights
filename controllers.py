@@ -1,5 +1,7 @@
 #TODO - move ths into a config file that can be written when we do the key mapping thing
 
+#NOTE - holding inc_timer for 10s powers off, dec_timer quits
+
 button_maps = {
     #TODO - fix this to whatever the name actually is
     'USBSNESController': {
