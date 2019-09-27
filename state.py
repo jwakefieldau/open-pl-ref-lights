@@ -243,7 +243,11 @@ class ControllersState(object):
 
     def check_quit_key_hold_time(self):
 
+        now_dt = datetime.datetime.utcnow()
         ret = False
+
+        #DEBUG
+        print('About to check current time {} against quit key down time {} and configured hold time {}'.format(now_dt, self.quit_key_hold_dt, self.exit_key_hold_time))
 
         if self.quit_key_hold_dt:
             if (datetime.datetime.utcnow() - self.quit_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time):
@@ -252,8 +256,13 @@ class ControllersState(object):
         return ret
         
     def check_shutdown_key_hold_time(self):
-
+        
+        now_dt = datetime.datetime.utcnow()
         ret = False
+
+        #DEBUG
+        print('About to check current time {} against shutdown key down time {} and configured hold time {}'.format(now_dt, self.shutdown_key_hold_dt, self.exit_key_hold_time))
+
 
         if self.shutdown_key_hold_dt:
             if (datetime.datetime.utcnow() - self.shutdown_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time):

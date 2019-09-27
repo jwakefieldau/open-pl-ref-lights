@@ -153,6 +153,10 @@ class PollAndAct(object):
                             # if inc_timer was held the configured time, shut down
                             if mapped_button == 'inc_timer':
                                 if self.controllers_state.check_shutdown_key_hold_time():
+
+                                    #DEBUG
+                                    print('About to run sudo poweroff!')
+
                                     os.system("sudo poweroff")
 
                                 else:
@@ -161,6 +165,10 @@ class PollAndAct(object):
                             # if dec_timer was held the configured time, quit
                             if mapped_button == 'dec_timer':
                                 if self.controllers_state.check_quit_key_hold_time():
+
+                                    #DEBUG
+                                    print('About to call sys.exit(0)!')
+
                                     sys.exit(0)
                                 
                                 else:
