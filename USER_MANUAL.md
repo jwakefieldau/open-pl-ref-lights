@@ -32,23 +32,23 @@ and on-board Bluetooth receiver.
 
 ### All referees
 
-* Y - red light
-* A - white light
+* **Y - red light**
+* **A - white light**
 
 **NOTE**:
 * As soon as the first referee has entered a decision, the lift timer will disappear.  When all three referees have entered a decision, the lights will display and the next attempt submission timer will start.
 
 ### Head referee only
 
-* X - clear lights and return to lift timer
+* **X - clear lights** and return to lift timer
 
-* START - start/stop the lift timer
-* SELECT - reset the lift timer to 1:00
-* R (the right button on the top of the controller) - add a minute to the lift timer
+* **START - start/stop the lift timer**
+* **SELECT - reset the lift timer to 1:00**
+* **R** (the right button on the top of the controller) - **add a minute to the lift timer**
     * this is handy for eg: setting a 10 minute timer between squat and bench press
-    * hold down this button for 10 seconds or more and release to shut down the system
-* L (the left button on the top of the controller) - subtract a minute from the lift timer
-    * hold down this button for 10 seconds or more to exit the software (only useful for debugging purposes)
+    * **hold down this button for 10 seconds or more and release to shut down the system**
+* **L** (the left button on the top of the controller) - **subtract a minute from the lift timer**
+    * hold down this button for 10 seconds or more to exit the software **(only useful for debugging purposes)**
 
 **NOTE**:
 * The software does not mandate operation of the lift timer.  If the meet does not require it, referees may simply enter a decision without the lift timer having been started.
