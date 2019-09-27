@@ -179,6 +179,15 @@ class PollAndAct(object):
                     if not (controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1):
                         continue
 
+                    # record head ref inc_timer and dec_timer timestamps so we can check on the key up if we should
+                    # quit or shut down
+                    if position == 'head':
+
+                        if mapped_button == 'inc_timer':
+                            self.controllers_state.start_shutdown_key_hold()
+                        
+                        if mapped_button == 'dec_timer':
+                            self.controllers_state.start_quit_key_hold()
                     
                     # if no ref has entered a decision, ie: we are clear, then 
                     # * head ref can start/stop the lift timer, 
