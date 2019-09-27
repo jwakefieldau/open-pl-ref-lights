@@ -1,3 +1,7 @@
+import datetime
+
+from datetime import timedelta
+
 class LightsState(object):
 
     def __init__(self):
@@ -115,12 +119,16 @@ class ControllersState(object):
     # this way we can determine if any have gone away and/or if we need to 
     # (re)map
 
-    def __init__(self):
+    def __init__(self, controller_config_dict):
 
         # key is ref position, val is InputDevice
         self.controller_dict = {}
         self.candidate_devices = []
         self.mapping_underway = False
+        self.exit_key_hold_time = controller_config_dict['exit_key_hold_time']
+        self.quit_key_hold_dt = None
+        self.shutdown_key_hold_dt = None
+
 
     def begin_mapping(self, candidate_devices):
 
@@ -221,3 +229,43 @@ class ControllersState(object):
 
         else:
             raise ValueError('tried to map invalid controller position: {}'.format(position))
+
+
+    def start_quit_key_hold(self):
+
+        if not self.quit_key_hold_dt:
+            self.quit_key_hold_dt = datetime.datetime.utcnow()
+
+    def start_shutdown_key_hold(self):
+        
+        if not self.shutdown_key_hold_dt:
+            self.shutdown_key_hold_dt = datetime.datetime.utcnow()
+
+    def check_quit_key_hold_time(self):
+
+        ret = False
+
+        if self.quit_key_hold_dt:
+            if (datetime.datetime.utcnow() - self.quit_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time)
+                ret = True
+
+        return ret
+        
+    def check_shutdown_key_hold_time(self):
+
+        ret = False
+
+        if self.shutdown_key_hold_dt:
+            if (datetime.datetime.utcnow() - self.shutdown_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time)
+                ret = True
+
+        return ret
+ 
+    def clear_quit_key_hold_time(self):
+
+        self.quit_key_hold_dt = None
+
+    def clear_shutdown_key_hold_time(self):
+
+        self.shutdown_key_hold_dt = None
+

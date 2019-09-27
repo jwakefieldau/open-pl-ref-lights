@@ -1,4 +1,6 @@
 import evdev
+import os
+import sys
 
 class UIHandler(object):
 
@@ -43,7 +45,7 @@ class TimerHandler(object):
 
 class PollAndAct(object):
 
-    def __init__(self, controller_config, button_maps, next_att_timer_state, lift_timer_state, lights_state, controllers_state, lift_timer_window, lights_window, map_controllers_window):
+    def __init__(self, button_maps, next_att_timer_state, lift_timer_state, lights_state, controllers_state, lift_timer_window, lights_window, map_controllers_window):
 
         self.next_att_timer_state = next_att_timer_state
         self.lift_timer_state = lift_timer_state
@@ -126,10 +128,6 @@ class PollAndAct(object):
                     #DEBUG
                     print(evdev.categorize(controller_event))
 
-                    # skip anything that's not a key down
-                    if not (controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1):
-                        continue
-
                     event_button = controller_event.code
                     button_map = self.button_maps[dev.name]
                     mapped_button = button_map.get(event_button)
@@ -147,6 +145,33 @@ class PollAndAct(object):
                     print('lights clear? {}'.format(self.lights_state.is_clear()))
                     print('lights complete? {}'.format(self.lights_state.is_complete()))
 
+                    # if we get a key up in the head position, check to see if we are releasing a shutdown
+                    # or quit key
+                    if controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 0:
+                        if position == 'head':
+                            
+                            # if inc_timer was held the configured time, shut down
+                            if mapped_button == 'inc_timer':
+                                if self.controller_state.check_shutdown_key_hold_time():
+                                    os.system("sudo poweroff")
+
+                                else:
+                                    self.controller_state.clear_shutdown_key_hold_time()
+
+                            # if dec_timer was held the configured time, quit
+                            if mapped_button == 'dec_timer':
+                                if self.controller_state.check_quit_key_hold_time():
+                                    sys.exit(0)
+                                
+                                else:
+                                    self.controller_state.clear_quit_key_hold_time()
+
+
+                    # skip anything else that's not a key down
+                    if not (controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 1):
+                        continue
+
+                    
                     # if no ref has entered a decision, ie: we are clear, then 
                     # * head ref can start/stop the lift timer, 
                     # * head ref can reset the lift timer if it is stopped
