@@ -125,7 +125,7 @@ class ControllersState(object):
         self.controller_dict = {}
         self.candidate_devices = []
         self.mapping_underway = False
-        self.exit_key_hold_time = controller_config_dict['exit_key_hold_time']
+        self.exit_key_hold_time = int(controller_config_dict['exit_key_hold_time'])
         self.quit_key_hold_dt = None
         self.shutdown_key_hold_dt = None
 
