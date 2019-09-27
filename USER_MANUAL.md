@@ -30,21 +30,6 @@ and on-board Bluetooth receiver.
 
 ## In-meet operation / controls
 
-### Head referee only
-
-* START - start/stop the lift timer
-* SELECT - reset the lift timer to 1:00
-* R (the right button on the top of the controller) - add a minute to the lift timer
-** this is handy for eg: setting a 10 minute timer between squat and bench press
-** hold down this button for 10 seconds or more and release to shut down the system
-* L (the left button on the top of the controller) - subtract a minute from the lift timer
-** hold down this button for 10 seconds or more to exit the software (only useful for debugging purposes)
-* X - clear lights and return to lift timer
-
-**NOTE**:
-* The software does not mandate operation of the lift timer.  If the meet does not require it, referees may simply enter a decision without the lift timer having been started.
-* As soon as the decision is complete (ie: a decision has been entered by all three referees and the lights displayed), the one minute timer for the lifter to submit their next attempt will start.
-
 ### All referees
 
 * Y - red light
@@ -53,6 +38,23 @@ and on-board Bluetooth receiver.
 **NOTE**:
 * As soon as the first referee has entered a decision, the lift timer will disappear.  When all three referees have entered a decision, the lights will display and the next attempt submission timer will start.
 
+### Head referee only
+
+* X - clear lights and return to lift timer
+
+* START - start/stop the lift timer
+* SELECT - reset the lift timer to 1:00
+* R (the right button on the top of the controller) - add a minute to the lift timer
+    * this is handy for eg: setting a 10 minute timer between squat and bench press
+    * hold down this button for 10 seconds or more and release to shut down the system
+* L (the left button on the top of the controller) - subtract a minute from the lift timer
+    * hold down this button for 10 seconds or more to exit the software (only useful for debugging purposes)
+
+**NOTE**:
+* The software does not mandate operation of the lift timer.  If the meet does not require it, referees may simply enter a decision without the lift timer having been started.
+* As soon as the decision is complete (ie: a decision has been entered by all three referees and the lights displayed), the one minute timer for the lifter to submit their next attempt will start.
+
+
 ## Shutdown (IMPORTANT)
 
-When the meet is over, shut down the lights system by holding down the R button for more than 10 seconds and then releasing.  This tells the lights software to shutdown the underlying operating system cleanly.  **Please do this rather than simply disconnecting the mains power**.  Once the system is shut down, the display will indicate that there is no video signal.
+When the meet is over, shut down the system by **holding down the R button for more than 10 seconds and then releasing**.  This tells the lights software to shutdown the underlying operating system cleanly.  **Please do this rather than simply disconnecting the mains power**.  Once the system is shut down, the display will indicate that there is no video signal.
