@@ -152,19 +152,19 @@ class PollAndAct(object):
                             
                             # if inc_timer was held the configured time, shut down
                             if mapped_button == 'inc_timer':
-                                if self.controller_state.check_shutdown_key_hold_time():
+                                if self.controllers_state.check_shutdown_key_hold_time():
                                     os.system("sudo poweroff")
 
                                 else:
-                                    self.controller_state.clear_shutdown_key_hold_time()
+                                    self.controllers_state.clear_shutdown_key_hold_time()
 
                             # if dec_timer was held the configured time, quit
                             if mapped_button == 'dec_timer':
-                                if self.controller_state.check_quit_key_hold_time():
+                                if self.controllers_state.check_quit_key_hold_time():
                                     sys.exit(0)
                                 
                                 else:
-                                    self.controller_state.clear_quit_key_hold_time()
+                                    self.controllers_state.clear_quit_key_hold_time()
 
 
                     # skip anything else that's not a key down
