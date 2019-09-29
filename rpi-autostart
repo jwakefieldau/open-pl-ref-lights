@@ -1,1 +1,1 @@
-@/usr/bin/python3 /home/pi/open-pl-ref-lights/main.py /home/pi/open-pl-ref-lights/config.cfg
+@/home/pi/open-pl-ref-lights/rpi-start.sh
