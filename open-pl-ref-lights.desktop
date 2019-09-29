@@ -1,4 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Powerlifting Referee Lights
-Exec=/usr/bin/python3 ~/open-pl-ref-lights/main.py

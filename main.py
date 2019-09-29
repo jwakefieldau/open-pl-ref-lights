@@ -9,7 +9,9 @@ from event_handlers import TimerHandler, PollAndAct, UIHandler
 from state import TimerState, LightsState, ControllersState
 from controllers import button_maps
 
-config_path = './config.cfg'
+import sys
+
+config_path = sys.argv[1]
 
 if __name__ == '__main__':
 
