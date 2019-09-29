@@ -1,6 +1,9 @@
 import evdev
 import os
 import sys
+import logging
+
+log = logging.getLogger(__name__)
 
 class UIHandler(object):
 
@@ -26,8 +29,7 @@ class TimerHandler(object):
 
         if self.lift_timer_window.props.visible:
 
-             #DEBUG
-             print('timer window visible')
+             log.debug('timer window visible, updating lift timer and showing it along with next attempt timer')
 
              self.lift_timer_window.update_lift_timer(self.lift_timer_state.timer_str())
              self.lift_timer_window.show_lift_timer()
@@ -35,8 +37,7 @@ class TimerHandler(object):
 
         elif self.lights_window.props.visible:
 
-             #DEBUG
-             print('lights window visible')
+             log.debug('lights window visible, updating only next attempt timer')
 
              self.lights_window.update_next_att_timer(self.next_att_timer_state.timer_str())
 
@@ -76,8 +77,7 @@ class PollAndAct(object):
                 cur_position = 'right' 
 
             # show controller prompt
-            #DEBUG
-            print('About to show controller prompt for position: {}'.format(cur_position))
+            log.debug('About to show controller prompt for position: {}'.format(cur_position))
 
             self.map_controllers_window.show_controller_prompt(cur_position)
 
@@ -117,16 +117,12 @@ class PollAndAct(object):
         for (position, dev,) in self.controllers_state.get_controllers().items():
             try:
 
-                #DEBUG
-                #print('Polling device {} position {}'.format(dev, position))
-
                 controller_events = dev.read()
 
                 for controller_event in controller_events:
                     # interpret and act on events using controller map based on what the state of everything is
 
-                    #DEBUG
-                    print(evdev.categorize(controller_event))
+                    log.debug(evdev.categorize(controller_event))
 
                     event_button = controller_event.code
                     button_map = self.button_maps[dev.name]
@@ -136,42 +132,32 @@ class PollAndAct(object):
                     if not mapped_button:
                         continue
 
-                    #DEBUG
-                    print('mapped event to position {} and button {}'.format(position, mapped_button))
-
-                    #DEBUG - show state of lift timer and lights
-                    print('STATE:')
-                    print('lift timer stopped? {}'.format(self.lift_timer_state.is_stopped()))
-                    print('lights clear? {}'.format(self.lights_state.is_clear()))
-                    print('lights complete? {}'.format(self.lights_state.is_complete()))
+                    log.debug('mapped event to position {} and button {}'.format(position, mapped_button))
+                    log.debug('STATE BEFORE PROCESSING INPUT EVENT: lift timer stopped? {} lights clear? {} lights complete? {}'.format(self.lift_timer_state.is_stopped(), self.lights_state.is_clear(), self.lights_state.is_complete()))
 
                     # if we get a key up in the head position, check to see if we are releasing a shutdown
                     # or quit key
                     if controller_event.type == evdev.ecodes.EV_KEY and controller_event.value == 0:
                         if position == 'head':
-                            
+
                             # if inc_timer was held the configured time, shut down
                             if mapped_button == 'inc_timer':
                                 if self.controllers_state.check_shutdown_key_hold_time():
-
-                                    #DEBUG
-                                    print('About to run sudo poweroff!')
-
+                                    log.info('Head ref requested shutdown, about to run sudo poweroff!')
                                     os.system("sudo poweroff")
 
                                 else:
+                                    log.debug('Head ref released inc_timer before shutdown hold threshold, clearing hold time')
                                     self.controllers_state.clear_shutdown_key_hold_time()
 
                             # if dec_timer was held the configured time, quit
                             if mapped_button == 'dec_timer':
                                 if self.controllers_state.check_quit_key_hold_time():
-
-                                    #DEBUG
-                                    print('About to call sys.exit(0)!')
-
+                                    log.info('Head ref requested exit, about to call sys.exit(0)!')
                                     sys.exit(0)
                                 
                                 else:
+                                    log.debug('Head ref released dec_timer before exit hold threshold, clearing hold time')
                                     self.controllers_state.clear_quit_key_hold_time()
 
 
@@ -184,9 +170,11 @@ class PollAndAct(object):
                     if position == 'head':
 
                         if mapped_button == 'inc_timer':
+                            log.debug('Got inc_timer key down from head ref, setting shutdown key hold time')
                             self.controllers_state.start_shutdown_key_hold()
                         
                         if mapped_button == 'dec_timer':
+                            log.debug('Got dec_timer key down from head ref, setting quit key hold time')
                             self.controllers_state.start_quit_key_hold()
                     
                     # if no ref has entered a decision, ie: we are clear, then 
@@ -281,29 +269,6 @@ class PollAndAct(object):
             except BlockingIOError:
                 pass
 
-
-        # make sure we fire again
-        return True
-
-
-   
-
-    #TODO - remove this - input polling and mapping are separate polls
-    def poll(self):
-
-        #DEBUG
-        #print(datetime.datetime.now())
-
-        new_device_list = [evdev.InputDevice(path) for path in evdev.list_devices()]
-
-        #DEBUG
-        #print('Polled device list: {}'.format(new_device_list))
-
-        if self.controllers_state.check_controllers(new_device_list):
-            self._process_controller_input()
-
-        else:
-            self._map_controllers(new_device_list)
 
         # make sure we fire again
         return True

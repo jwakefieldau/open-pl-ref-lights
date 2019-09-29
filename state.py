@@ -2,6 +2,10 @@ import datetime
 
 from datetime import timedelta
 
+import logging
+
+log = logging.getLogger(__name__)
+
 class LightsState(object):
 
     def __init__(self):
@@ -16,12 +20,16 @@ class LightsState(object):
             'right': None,
         }
 
+        log.debug('Lights cleared')
+
     def is_complete(self):
 
         ret = False
 
         if [v for (k, v,) in self.state.items()].count(None) == 0:
             ret = True
+
+        log.debug('Is lights state complete? {}'.format(ret))
 
         return ret
 
@@ -31,10 +39,14 @@ class LightsState(object):
 
         if [v for (k, v,) in self.state.items()].count(None) == 3:
             ret = True
+        
+        log.debug('Is lights state clear? {}'.format(ret))
 
         return ret
 
     def get_state(self):
+
+        log.debug('About to return lights state: {}'.format(str(self.state)))
 
         return self.state
 
@@ -42,6 +54,8 @@ class LightsState(object):
 
         if self.state[position] is None:
             self.state[position] = val
+
+        log.debug('Added decision {} to position {}'.format(val, position))
 
 
 class TimerState(object):
@@ -56,6 +70,8 @@ class TimerState(object):
 
         self.cur_seconds = init_seconds
 
+        log.debug('Set timer to {} seconds'.format(self.cur_seconds))
+
     def tick(self):
 
         if not self.stopped and self.cur_seconds > 0:
@@ -65,22 +81,24 @@ class TimerState(object):
 
         self.set_seconds(60)
 
+        log.debug('Reset timer')
+
     def start(self):
      
         self.stopped = False
         
-        #DEBUG
-        print('started timer')
+        log.debug('started timer')
 
     def stop(self):
  
         self.stopped = True
 
-        #DEBUG
-        print('stopped timer')
+        log.debug('stopped timer')
 
 
     def is_stopped(self):
+
+        log.debug('Is timer stopped? {}'.format(self.stopped))
 
         return self.stopped
 
@@ -135,10 +153,14 @@ class ControllersState(object):
         self.candidate_devices = candidate_devices
         self.mapping_underway = True
 
+        log.debug('Started controller device mapping')
+
     def end_mapping(self):
 
         self.candidate_devices = []
         self.mapping_underway = False
+
+        log.debug('Finished controller device mapping')
 
     def is_mapping(self):
 
@@ -150,13 +172,7 @@ class ControllersState(object):
 
     def check_controllers(self, new_input_device_list=None):
 
-        #DEBUG
-        #print('About to check to see if all controllers are mapped')
-
         ret = True
-
-        #DEBUG
-        #print('Currently mapped controllers: {}'.format(str(self.controller_dict)))
 
         if not new_input_device_list:
             new_input_device_list = self.candidate_devices
@@ -168,37 +184,17 @@ class ControllersState(object):
 
             # See if any mapped controllers are missing from the newly polled list
 
-            #DEBUG
-            try:
+            # InputDevice.path appears to now be .fn for some reason
 
-                # InputDevice.path appears to now be .fn for some reason
+            cur_path_set = set([input_device.fn for (position, input_device,) in self.controller_dict.items()])
+            new_path_set = set([input_device.fn for input_device in new_input_device_list])
 
-                #cur_path_set = set([input_device.path for (position, input_device,) in self.controller_dict.items()])
-                cur_path_set = set([input_device.fn for (position, input_device,) in self.controller_dict.items()])
-
-                #new_path_set = set([input_device.path for input_device in new_input_device_list])
-                new_path_set = set([input_device.fn for input_device in new_input_device_list])
-
-            #DEBUG
-            except AttributeError:
-                for (p,d,) in self.controller_dict.items():
-                    #print('mapped device: path: {} name: {} phys: {}'.format(d.path, d.name, d.phys))
-                    print('mapped device: {}:{}'.format(str(d), dir(d)))
-                for d in new_input_device_list:
-                    #print('polled device: path: {} name: {} phys: {}'.format(d.path, d.name, d.phys))
-                    print('polled device: {}:{}'.format(str(d), dir(d)))
-
-            #print('Comparing physical paths for currently mapped controllers: {} against polled input devices: {}'.format(cur_phys_set, new_phys_set))
+            log.debug('Comparing physical paths for currently mapped controllers: {} against polled input devices: {}'.format(cur_phys_set, new_phys_set))
    
-            #NOTE - make sure we have the operands in the right order here - we want to make sure that nothing we have mapped is not in the polled set
             # return False if we are missing some controllers that are mapped
-            #if len(new_path_set.difference(cur_path_set)) > 0:
             if len(cur_path_set.difference(new_path_set)) > 0:
 
-
-                #DEBUG
-                print('Difference in controller mapping: {}, mapped set: {}, polled set: {}'.format(new_path_set.difference(cur_path_set), cur_path_set, new_path_set))
-
+                log.debug('Difference in controller mapping: {}, mapped set: {}, polled set: {}'.format(new_path_set.difference(cur_path_set), cur_path_set, new_path_set))
                 ret = False
 
             # return True if all the mapped controllers are still there
@@ -209,8 +205,7 @@ class ControllersState(object):
         else:
             ret = False
 
-        #DEBUG
-        #print('About to return {} from check_controllers()'.format(ret))
+        log.debug('About to return {} from check_controllers()'.format(ret))
 
         return ret
         
@@ -226,6 +221,8 @@ class ControllersState(object):
 
         if position in ['left', 'head', 'right']:
             self.controller_dict[position] = input_device
+
+            log.info('Assigned controller {} to position {}'.format(input_device, position))
 
         else:
             raise ValueError('tried to map invalid controller position: {}'.format(position))
@@ -246,8 +243,7 @@ class ControllersState(object):
         now_dt = datetime.datetime.utcnow()
         ret = False
 
-        #DEBUG
-        print('About to check current time {} against quit key down time {} and configured hold time {}'.format(now_dt, self.quit_key_hold_dt, self.exit_key_hold_time))
+        log.debug('About to check current time {} against quit key down time {} and configured hold time {}'.format(now_dt, self.quit_key_hold_dt, self.exit_key_hold_time))
 
         if self.quit_key_hold_dt:
             if (datetime.datetime.utcnow() - self.quit_key_hold_dt) >= timedelta(seconds=self.exit_key_hold_time):
@@ -260,8 +256,7 @@ class ControllersState(object):
         now_dt = datetime.datetime.utcnow()
         ret = False
 
-        #DEBUG
-        print('About to check current time {} against shutdown key down time {} and configured hold time {}'.format(now_dt, self.shutdown_key_hold_dt, self.exit_key_hold_time))
+        log.debug('About to check current time {} against shutdown key down time {} and configured hold time {}'.format(now_dt, self.shutdown_key_hold_dt, self.exit_key_hold_time))
 
 
         if self.shutdown_key_hold_dt:

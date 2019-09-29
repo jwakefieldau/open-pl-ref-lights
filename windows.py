@@ -2,6 +2,10 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
+import logging
+
+log = logging.getLogger(__name__)
+
 class AbsAppWindow(Gtk.Window):
 
     def __init__(self, next_att_timer_scale, ui_handler):
@@ -50,9 +54,8 @@ class AbsAppWindow(Gtk.Window):
 
     def update_next_att_timer(self, timer_str):
 
-        #DEBUG
-        print('about to update next attempt timer with string {} at size {}'.format(timer_str, self.next_att_timer_label_size))
-        print('next attempt timer label is visible: {}'.format(self.next_att_timer_label.props.visible))
+        log.debug('about to update next attempt timer with string {} at size {}'.format(timer_str, self.next_att_timer_label_size))
+        log.debug('next attempt timer label is visible: {}'.format(self.next_att_timer_label.props.visible))
     
         self.next_att_timer_label.set_markup('<span size="{}" foreground="white">Next attempt submission: {}</span>'.format(self.next_att_timer_label_size, timer_str))   
 
@@ -60,8 +63,7 @@ class AbsAppWindow(Gtk.Window):
         self.next_att_timer_box.show()
         self.next_att_timer_label.show()
 
-        #DEBUG
-        print('called show_next_att_timer(), next attempt timer is now visible: {}'.format(self.next_att_timer_label.props.visible))
+        log.debug('called show_next_att_timer(), next attempt timer is now visible: {}'.format(self.next_att_timer_label.props.visible))
 
     def hide_next_att_timer(self):
         self.next_att_timer_box.hide()
@@ -82,8 +84,7 @@ class LiftTimerWindow(AbsAppWindow):
 
     def show_lift_timer(self):
 
-        #DEBUG
-        print('about to show lift timer label')
+        log.debug('about to show lift timer label')
 
         self.lift_timer_label.show()
         self.next_att_timer_box.show()
@@ -91,8 +92,7 @@ class LiftTimerWindow(AbsAppWindow):
 
     def update_lift_timer(self, timer_str):
 
-        #DEBUG
-        print('about to update lift timer label with {} at size {}'.format(timer_str, self.lift_timer_label_size))
+        log.debug('about to update lift timer label with {} at size {}'.format(timer_str, self.lift_timer_label_size))
 
         self.lift_timer_label.set_markup('<span size="{}" foreground="white">{}</span>'.format(self.lift_timer_label_size, timer_str)) 
         
@@ -122,8 +122,7 @@ class LightsWindow(AbsAppWindow):
 
     def show_lights(self, light_state_obj):
 
-        #DEBUG
-        print('about to show lights')
+        log.debug('about to show lights')
 
         if light_state_obj.is_complete():
             state_dict = light_state_obj.get_state()
@@ -131,14 +130,12 @@ class LightsWindow(AbsAppWindow):
             for position in ['left', 'head', 'right']:
                 if state_dict[position] == True:
 
-                    #DEBUG
-                    print('setting white light for position {}'.format(position))
+                    log.debug('setting white light for position {}'.format(position))
 
                     self.light_dict[position].set_from_pixbuf(self.white_light_pixbuf)
                 elif state_dict[position] == False:
 
-                    #DEBUG
-                    print('setting red light for position {}'.format(position))
+                    log.debug('setting red light for position {}'.format(position))
 
                     self.light_dict[position].set_from_pixbuf(self.red_light_pixbuf)
 
@@ -166,13 +163,10 @@ class MapControllersWindow(AbsAppWindow):
 
     def show_controller_prompt(self, position):
 
-        #DEBUG
-        #print('About to set controller prompt for position {} at size {}'.format(position, self.prompt_label_size))
+        log.debug('About to set controller prompt for position {} at size {}'.format(position, self.prompt_label_size))
 
         self.prompt_label.set_markup('<span size="{}" foreground="white">Press any button on the {} controller</span>'.format(self.prompt_label_size, position))
         self.prompt_label.show()
         self.vbox.show()
         self.show()
 
-        #DEBUG
-        #print('label visibility: {}, vbox visibility: {}, window visibility: {}'.format(self.prompt_label.props.visible, self.vbox.props.visible, self.props.visible))
