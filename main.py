@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     next_att_timer_state = TimerState()
     lift_timer_state = TimerState()
-    map_controllers_timer_state = TimerState(init_seconds=config['controllers']['mapping_timeout'])
+    map_controllers_timer_state = TimerState(init_seconds=int(config['controllers']['mapping_timeout']))
 
     light_state = LightsState()
 

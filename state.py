@@ -206,7 +206,7 @@ class ControllersState(object):
             cur_path_set = set([input_device.fn for (position, input_device,) in self.controller_dict.items()])
             new_path_set = set([input_device.fn for input_device in new_input_device_list])
 
-            log.debug('Comparing physical paths for currently mapped controllers: {} against polled input devices: {}'.format(cur_phys_set, new_phys_set))
+            log.debug('Comparing physical paths for currently mapped controllers: {} against polled input devices: {}'.format(cur_path_set, new_path_set))
    
             # return False if we are missing some controllers that are mapped
             if len(cur_path_set.difference(new_path_set)) > 0:
