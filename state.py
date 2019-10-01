@@ -66,6 +66,7 @@ class TimerState(object):
         self.set_seconds(init_seconds)
         self.init_seconds = init_seconds
         self.stopped = True
+        self.expired = False
 
     def set_seconds(self, init_seconds):
 
@@ -77,6 +78,10 @@ class TimerState(object):
 
         if not self.stopped and self.cur_seconds > 0:
             self.cur_seconds -= 1
+
+        if self.cur_seconds == 0:
+            self.stop()
+            self.expired = True
 
     def reset(self):
 
@@ -102,6 +107,12 @@ class TimerState(object):
         log.debug('Is timer stopped? {}'.format(self.stopped))
 
         return self.stopped
+
+    def is_expired(self):
+   
+        log.debug('Is timer expired? {}'.format(self.expired))
+
+        return self.expired
 
     def increment(self):
 

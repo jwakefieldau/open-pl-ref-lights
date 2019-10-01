@@ -75,12 +75,14 @@ class PollAndAct(object):
 
         # check to see if we are in a mapping operation that has now timed out, if so, end it so that
         # we can start another
-        if self.controllers_state.is_mapping() and self.controllers_state.is_mapping_timed_out():
+        #if self.controllers_state.is_mapping() and self.controllers_state.is_mapping_timed_out():
+        if self.controllers_state.is_mapping() and self.map_controllers_timer_state.is_expired():
             self.controllers_state.end_mapping()
 
         if not self.controllers_state.is_mapping():
             self.controllers_state.begin_mapping([evdev.InputDevice(path) for path in evdev.list_devices()])
             self.map_controllers_timer_state.reset()
+            self.map_controllers_timer_state.start()
 
         if not self.controllers_state.check_controllers():
             controller_dict = self.controllers_state.get_controllers()
