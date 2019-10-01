@@ -64,6 +64,7 @@ class TimerState(object):
     def __init__(self, init_seconds=60):
 
         self.set_seconds(init_seconds)
+        self.init_seconds = init_seconds
         self.stopped = True
 
     def set_seconds(self, init_seconds):
@@ -79,7 +80,7 @@ class TimerState(object):
 
     def reset(self):
 
-        self.set_seconds(60)
+        self.set_seconds(self.init_seconds)
 
         log.debug('Reset timer')
 

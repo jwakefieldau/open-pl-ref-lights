@@ -56,12 +56,13 @@ class TimerHandler(object):
 
 class PollAndAct(object):
 
-    def __init__(self, button_maps, next_att_timer_state, lift_timer_state, lights_state, controllers_state, lift_timer_window, lights_window, map_controllers_window):
+    def __init__(self, button_maps, next_att_timer_state, lift_timer_state, lights_state, controllers_state, map_controllers_timer_state, lift_timer_window, lights_window, map_controllers_window):
 
         self.next_att_timer_state = next_att_timer_state
         self.lift_timer_state = lift_timer_state
         self.lights_state = lights_state
         self.controllers_state = controllers_state
+        self.map_controllers_timer_state = map_controllers_timer_state
         self.lift_timer_window = lift_timer_window
         self.lights_window = lights_window
         self.map_controllers_window = map_controllers_window
@@ -79,6 +80,7 @@ class PollAndAct(object):
 
         if not self.controllers_state.is_mapping():
             self.controllers_state.begin_mapping([evdev.InputDevice(path) for path in evdev.list_devices()])
+            self.map_controllers_timer_state.reset()
 
         if not self.controllers_state.check_controllers():
             controller_dict = self.controllers_state.get_controllers()
@@ -94,7 +96,7 @@ class PollAndAct(object):
 
             # show controller prompt
             log.debug('About to show controller prompt for position: {}'.format(cur_position))
-
+            
             self.map_controllers_window.show_controller_prompt(cur_position)
 
             #NOTE - return fast - we maintain state of mapping operation so

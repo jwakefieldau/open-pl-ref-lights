@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     controllers_state = ControllersState(config['controllers'])
 
-    poll_act_obj = PollAndAct(button_maps, next_att_timer_state, lift_timer_state, light_state, controllers_state, lift_timer_window, lights_window, map_controllers_window)
+    poll_act_obj = PollAndAct(button_maps, next_att_timer_state, lift_timer_state, light_state, controllers_state, map_controllers_timer_state, lift_timer_window, lights_window, map_controllers_window)
 
     # is this fine enough resolution?
     GObject.timeout_add(100, poll_act_obj.poll_map_controllers)
