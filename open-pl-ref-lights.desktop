@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=open-pl-ref-lights
+Exec=/usr/bin/python3 /home/pi/open-pl-ref-lights/main.py /home/pi/open-pl-ref-lights/config.cfg
