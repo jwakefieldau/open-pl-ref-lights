@@ -158,8 +158,10 @@ class MapControllersWindow(AbsAppWindow):
         AbsAppWindow.__init__(self, widget_scaling_dict['next_att_timer_scale'], ui_handler)
 
         self.prompt_label = Gtk.Label()
+        self.map_controllers_timer_label = Gtk.Label()
         self.prompt_label_size = self.scale(self.screen_height, widget_scaling_dict['controller_prompt_scale']) * 1000
         self.vbox.pack_start(self.prompt_label, True, False, 0)
+        self.vbox.pack_start(self.map_controllers_timer_label, True, False, 0)
 
     def show_controller_prompt(self, position):
 
@@ -169,4 +171,11 @@ class MapControllersWindow(AbsAppWindow):
         self.prompt_label.show()
         self.vbox.show()
         self.show()
+
+    def update_map_controllers_timer(self, timer_str):
+
+        log.debug('About to update map controllers timer to {} with size {}'.format(timer_str, self.prompt_label_size))
+
+        self.map_controllers_timer_label.set_markup('<span size="{}" foreground="white">Restarting mapping if not done in {}</span>'.format(self.prompt_label_size, timer_str))
+        self.map_controllers_timer_label.show()
 

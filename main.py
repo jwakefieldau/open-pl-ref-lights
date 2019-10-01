@@ -30,6 +30,7 @@ if __name__ == '__main__':
 
     next_att_timer_state = TimerState()
     lift_timer_state = TimerState()
+    map_controllers_timer_state = TimerState(init_seconds=config['controllers']['mapping_timeout'])
 
     light_state = LightsState()
 
@@ -43,7 +44,7 @@ if __name__ == '__main__':
     # is this fine enough resolution?
     GObject.timeout_add(100, poll_act_obj.poll_controller_input)
 
-    timer_handler = TimerHandler(lift_timer_window, lights_window, next_att_timer_state, lift_timer_state)
+    timer_handler = TimerHandler(lift_timer_window, lights_window, map_controllers_window, next_att_timer_state, lift_timer_state, map_controllers_timer_state)
     GObject.timeout_add(1000, timer_handler.handle_tick)
 
     log.debug('About to show mapping controller prompt window')

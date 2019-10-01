@@ -13,33 +13,43 @@ class UIHandler(object):
 
 class TimerHandler(object):
 
-    def __init__(self, lift_timer_window, lights_window, next_att_timer_state, lift_timer_state):
+    def __init__(self, lift_timer_window, lights_window, map_controllers_window, next_att_timer_state, lift_timer_state, map_controllers_timer_state):
 
         self.next_att_timer_state = next_att_timer_state
         self.lift_timer_state = lift_timer_state
+        self.map_controllers_timer_state = map_controllers_timer_state
         self.lift_timer_window = lift_timer_window
         self.lights_window = lights_window
+        self.map_controllers_window = map_controllers_window
 
     def handle_tick(self):
 
         self.lift_timer_state.tick()
         self.next_att_timer_state.tick()
+        self.map_controllers_timer_state.tick()
 
         # check which window we're on by checking state of lift timer and lights windows
 
         if self.lift_timer_window.props.visible:
 
-             log.debug('timer window visible, updating lift timer and showing it along with next attempt timer')
+            log.debug('timer window visible, updating lift timer and showing it along with next attempt timer')
 
-             self.lift_timer_window.update_lift_timer(self.lift_timer_state.timer_str())
-             self.lift_timer_window.show_lift_timer()
-             self.lift_timer_window.update_next_att_timer(self.next_att_timer_state.timer_str())
+            self.lift_timer_window.update_lift_timer(self.lift_timer_state.timer_str())
+            self.lift_timer_window.show_lift_timer()
+            self.lift_timer_window.update_next_att_timer(self.next_att_timer_state.timer_str())
 
         elif self.lights_window.props.visible:
 
-             log.debug('lights window visible, updating only next attempt timer')
+            log.debug('lights window visible, updating only next attempt timer')
 
-             self.lights_window.update_next_att_timer(self.next_att_timer_state.timer_str())
+            self.lights_window.update_next_att_timer(self.next_att_timer_state.timer_str())
+
+        elif self.map_controllers_window.props.visible:
+            
+            log.debug('map controllers window visible, updating only map controllers timer')
+
+            self.map_controllers_window.update_map_controllers_timer(self.map_controllers_timer_state.timer_str()) 
+                  
 
         #make sure we always tick again
         return True
@@ -61,6 +71,12 @@ class PollAndAct(object):
 
         # maintain state of mapping operation so that we don't have to redo this every time the function
         # enters on the timer interval
+
+        # check to see if we are in a mapping operation that has now timed out, if so, end it so that
+        # we can start another
+        if self.controllers_state.is_mapping() and self.controllers_state.is_mapping_timed_out():
+            self.controllers_state.end_mapping()
+
         if not self.controllers_state.is_mapping():
             self.controllers_state.begin_mapping([evdev.InputDevice(path) for path in evdev.list_devices()])
 

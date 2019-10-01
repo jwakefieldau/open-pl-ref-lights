@@ -143,6 +143,8 @@ class ControllersState(object):
         self.controller_dict = {}
         self.candidate_devices = []
         self.mapping_underway = False
+        self.mapping_start_dt = None
+        self.mapping_timeout = int(controller_config_dict['mapping_timeout'])
         self.exit_key_hold_time = int(controller_config_dict['exit_key_hold_time'])
         self.quit_key_hold_dt = None
         self.shutdown_key_hold_dt = None
@@ -152,19 +154,34 @@ class ControllersState(object):
 
         self.candidate_devices = candidate_devices
         self.mapping_underway = True
+        self.mapping_start_dt = datetime.datetime.utcnow()
 
-        log.debug('Started controller device mapping')
+        log.debug('Started controller device mapping with devices: {}'.format(str(self.candidate_devices)))
 
     def end_mapping(self):
 
         self.candidate_devices = []
         self.mapping_underway = False
+        self.mapping_start_dt = None
 
         log.debug('Finished controller device mapping')
 
     def is_mapping(self):
 
         return self.mapping_underway
+
+    def is_mapping_timed_out(self):
+
+        now_dt = datetime.datetime.utcnow()
+        ret = False
+
+        log.debug('Comparing current time {} against mapping start time {}'.format(now_dt, self.mapping_start_dt))
+
+        if (now_dt - self.mapping_start_dt) > timedelta(seconds=self.mapping_timeout):
+            log.debug('Mapping operation timed out')
+            ret = True
+
+        return ret
 
     def get_candidate_devices(self):
 
