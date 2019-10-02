@@ -163,8 +163,8 @@ class PollAndAct(object):
                             # if inc_timer was held the configured time, shut down
                             if mapped_button == 'inc_timer':
                                 if self.controllers_state.check_shutdown_key_hold_time():
-                                    log.info('Head ref requested shutdown, about to run sudo poweroff!')
-                                    os.system("sudo poweroff")
+                                    log.info('Head ref requested shutdown, about to run sudo shutdown -h now!')
+                                    os.system("sudo shutdown -h now")
 
                                 else:
                                     log.debug('Head ref released inc_timer before shutdown hold threshold, clearing hold time')

@@ -4,10 +4,6 @@ Powerlifting lights and timer system, Python based.  Output is a monitor/TV, inp
 ## current issues
 
 ### showstoppers
-* if controller devices aren't there when we start, we need some way to bail out of a controller mapping that cannot complete with the available devices.  Maybe an n second configurable timeout?
-* commit local changes made to (i think:) .desktop file (update install script appropriately), main.py, config.cfg, state.py
-* fix references to set names in state.py
-* restore INFO log level on rpi
 
 ### less-critical
 
@@ -25,4 +21,9 @@ Powerlifting lights and timer system, Python based.  Output is a monitor/TV, inp
 * add "cheat codes" to re-map controllers, do button mapping for unrecognised controllers
 * do we need to show something other than a blank screen when the decision is incomplete?
 * maybe make button handling / decision logic more concise?  can it be?
+
+### changes/features for maybe Pro version
 * build 433MhZ or similar controllers and receivers that avoid bluetooth pairing bullshit but also phase cancellation, interference etc, write code to handle them
+* actual LED globes that can be visible for 180 degrees instead of just on a flat screen
+* arduino or similar to handle controller signal and relay lights, talks back to system via USB
+* use a reliable PC platform like Intel NUC

@@ -22,9 +22,11 @@ and on-board Bluetooth receiver.
 
 1. Turn on the display.
 1. Connect the computer to the display.
-1. Connect the computer to the mains power, it should power on immediately, boot within seconds and start the ref lights software automatically.
+1. Connect the computer to the mains power, it should power on immediately, boot within a minute and start the ref lights software automatically.
+1. Wait a couple of minutes to allow the Bluetooth service to start - otherwise the controllers will not connect initially.
 1. Turn on the controllers - on each, press the START button and the blue LED on top should flash briefly and then go solid.
-1. Press any button on the left, head, and right controllers, as prompted by the software.  This allows the software to identify which referee position the input is coming from.
+1. Press any button on the left, head, and right controllers, as prompted by the software.  This allows the software to identify which referee position the input is coming from. 
+    1. This process has a 15 second timeout so that if controllers are connected after the software starts, they can be picked up on the next go around.
     1. **NOTE** the controllers will automatically power off if left idle for long enough.  If this happens, the software will detect that controllers are missing and again prompt to map the controllers for each referee position.
 1. You should now see the lift timer on the display.
 
@@ -57,4 +59,8 @@ and on-board Bluetooth receiver.
 
 ## Shutdown (IMPORTANT)
 
-When the meet is over, shut down the system by **holding down the R button for more than 10 seconds and then releasing**.  This tells the lights software to shutdown the underlying operating system cleanly.  **Please do this rather than simply disconnecting the mains power**.  Once the system is shut down, the display will indicate that there is no video signal.
+When the meet is over, shut down the system by **holding down the R button for more than 10 seconds and then releasing**.  This tells the lights software to shutdown the underlying operating system cleanly.  **Please do this rather than simply disconnecting the mains power**.  Once the system is shut down, the display will indicate that there is no video signal.  Wait a few minutes before disconnecting the power as a precaution
+
+## Charging controller batteries
+
+The 8BitDo SN30 controllers have a USB-C port for charging.  When fully charged, they should be able to operate for about 18 hours.  As mentioned earlier, if left idle for a few minutes, they will automatically power off.
