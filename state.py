@@ -92,6 +92,7 @@ class TimerState(object):
     def start(self):
      
         self.stopped = False
+        self.expired = False
         
         log.debug('started timer')
 
